@@ -24,8 +24,7 @@ enum ResetBuffer{
 
 typedef struct{
 	uint8_t 	Status;
-	uint8_t 	transmitDataBuffer[32];
-	uint8_t 	receiveDataBuffer[32];
+	uint8_t 	CircularDataBuffer[32];
 }RF_Module;
 
 void Setup(void);
