@@ -29,7 +29,7 @@ typedef struct{
 
 void Setup(void);
 
-void resetDataBuffers(uint8_t bufferType);
+void resetDataBuffer();
 
 void getRegister(uint8_t regAddress);
 void getRegisterMultipleData(uint8_t regAddress, uint8_t len);

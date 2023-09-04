@@ -12,7 +12,7 @@ RF_Module RF_Data;
 void Setup(void)
 {
 	RF_Data.Status = 0;
-	resetDataBuffers();
+	resetDataBuffer();
 	setRegister(EN_RXADDR, 0x01);
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 	setRegister(RX_PW_P0, 0x20);
@@ -27,7 +27,7 @@ void Setup(void)
 	RF_Data.CircularDataBuffer[5] = 'e';
 
 	setAddressData(RX_ADDR_P0, 6);
-	resetDataBuffers();
+	resetDataBuffer();
 	getRegister(RX_PW_P0);
 	//getRegister(CONFIG);
 
@@ -78,14 +78,14 @@ void setRegister(uint8_t regAddress, uint8_t data)
 	/* Read the data from the register so we do not write data we don't want to write */
 	getRegister(regAddress);
 
-	/* Assemble the modified data */
-	RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
+	/* Assemble the modified data. */
 	RF_Data.CircularDataBuffer[1] = RF_Data.CircularDataBuffer[0];
 	RF_Data.CircularDataBuffer[1] |= data;
+	RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
 
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 	/* Send out register data */
-	HAL_SPI_Transmit_IT(&hspi1, RF_Data.CircularDataBuffer, 2);
+	HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, 2);
 }
 
 void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
@@ -94,13 +94,13 @@ void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
 	getRegister(regAddress);
 
 	/* Assemble the modified data */
-	RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
-
 	for (int i = 0; i < len; ++i)
 	{
 		RF_Data.CircularDataBuffer[i + 1] = RF_Data.CircularDataBuffer[i];
 		RF_Data.CircularDataBuffer[i + 1] |= data[i];
 	}
+	/* First byte has to be set last to be set */
+	RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
 
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 	/* Send out register data */
@@ -111,10 +111,10 @@ void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
 void setAddressData(uint8_t regAddress, uint8_t len)
 {
 	/* Read the data from the register so we do not write data we don't want to write */
-	//getRegister(regAddress);
+	getRegister(regAddress);
 
 	/* Assemble the modified data */
-	RF_Data.transmitDataBuffer[0] = regAddress | W_REGISTER;
+	RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
 
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 	/* Send out register data */
@@ -122,8 +122,9 @@ void setAddressData(uint8_t regAddress, uint8_t len)
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 }
 
-void sendPayloadReadRequest(void){
-	resetDataBuffers();
+void sendPayloadReadRequest(void)
+{
+	resetDataBuffer();
 
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 

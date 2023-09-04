@@ -129,7 +129,7 @@ int main(void)
 
   while (1)
   {
-	  resetDataBuffers(RESET_ALL_BUFFER);
+	  resetDataBuffer();
 	  /*switch (Transciever_stateMachine) {
 	  	case SEND_PAYLOAD_LENGTH_READ_REQUEST:
 	  		transmit_data = R_RX_PL_WID;
