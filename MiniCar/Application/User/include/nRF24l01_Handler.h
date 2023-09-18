@@ -19,11 +19,19 @@ enum ResetBuffer{
 	RESET_ALL_BUFFER
 };
 
+typedef enum nRF24L01_status{
+	SEND_PAYLOAD_LENGTH_READ_REQUEST,
+	RECEIVE_MESSAGE_LENGTH,
+	SEND_PAYLOAD_READ_REQUEST,
+	RECEIVE_PAYLOAD,
+}nRF24L01_status;
+
 #include <nRF24l01_MemoryMap.h>
 #include "stm32l4xx_hal.h"
 
 typedef struct{
 	uint8_t 	Status;
+	uint8_t		State;
 	uint8_t 	CircularDataBuffer[32];
 }RF_Module;
 

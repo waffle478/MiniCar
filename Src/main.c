@@ -26,12 +26,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-typedef enum nRF24L01_status{
-	SEND_PAYLOAD_LENGTH_READ_REQUEST,
-	RECEIVE_MESSAGE_LENGTH,
-	SEND_PAYLOAD_READ_REQUEST,
-	RECEIVE_PAYLOAD,
-}nRF24L01_status;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -118,7 +112,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
-  getRegister(CONFIG);
+
   Setup();
   /* USER CODE END 2 */
 
@@ -283,7 +277,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -458,10 +452,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI_NSS_GPIO_Port, SPI_NSS_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SteeringMotor_Sleep_GPIO_Port, SteeringMotor_Sleep_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, SPI_NSS_Pin|SteeringMotor_Sleep_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(MainMotor_Sleep_GPIO_Port, MainMotor_Sleep_Pin, GPIO_PIN_RESET);
@@ -503,6 +494,7 @@ void HAL_SPI_TxCpltCallback (SPI_HandleTypeDef * hspi)
 	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 	//HAL_SPI_Receive(&hspi1, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
 	transmit_IT_flag= TRUE;
+	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 }
 
 /* USER CODE END 4 */

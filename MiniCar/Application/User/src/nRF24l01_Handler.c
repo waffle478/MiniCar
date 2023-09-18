@@ -11,14 +11,15 @@ RF_Module RF_Data;
 
 void Setup(void)
 {
+	getRegister(CONFIG);
+
 	RF_Data.Status = 0;
 	resetDataBuffer();
 	setRegister(EN_RXADDR, 0x01);
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
+
 	setRegister(RX_PW_P0, 0x20);
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
+
 	setRegister(CONFIG, (0x3));
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 
 	RF_Data.CircularDataBuffer[1] = '2';
 	RF_Data.CircularDataBuffer[2] = 'N';
@@ -29,8 +30,7 @@ void Setup(void)
 	setAddressData(RX_ADDR_P0, 6);
 	resetDataBuffer();
 	getRegister(RX_PW_P0);
-	//getRegister(CONFIG);
-
+	resetDataBuffer();
 }
 
 void resetDataBuffer()
@@ -56,22 +56,22 @@ void getRegister(uint8_t regAddress)
 	ret = HAL_SPI_Receive_IT(&hspi1, &RF_Data.CircularDataBuffer[0], 1);
 }
 
-void getRegisterMultipleData(uint8_t regAddress, uint8_t len)
+/*void getRegisterMultipleData(uint8_t regAddress, uint8_t len)
 {
 	/* Set command to read the registers */
-	regAddress |= R_REGISTER;
+	/*regAddress |= R_REGISTER;
 
 	/* Enable slave */
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
+	/*HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 
 	/* Send command to read the given register address and read the status at the same time */
-	HAL_SPI_TransmitReceive(&hspi1, &regAddress, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
+	/*HAL_SPI_TransmitReceive(&hspi1, &regAddress, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
 	/* Read the register data */
-	HAL_SPI_Receive(&hspi1, RF_Data.CircularDataBuffer, 32, DEFAULT_TIMEOUT);
+	//HAL_SPI_Receive(&hspi1, RF_Data.CircularDataBuffer, 32, DEFAULT_TIMEOUT);
 
 	/* Disable slave */
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
-}
+	/*HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
+}*/
 
 void setRegister(uint8_t regAddress, uint8_t data)
 {
@@ -88,25 +88,25 @@ void setRegister(uint8_t regAddress, uint8_t data)
 	HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, 2);
 }
 
-void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
+/*void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
 {
 	/* Read the data from the register so we do not write data we don't want to write */
-	getRegister(regAddress);
+	/*getRegister(regAddress);
 
 	/* Assemble the modified data */
-	for (int i = 0; i < len; ++i)
+	/*for (int i = 0; i < len; ++i)
 	{
 		RF_Data.CircularDataBuffer[i + 1] = RF_Data.CircularDataBuffer[i];
 		RF_Data.CircularDataBuffer[i + 1] |= data[i];
 	}
 	/* First byte has to be set last to be set */
-	RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
+	/*RF_Data.CircularDataBuffer[0] = regAddress | W_REGISTER;
 
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 	/* Send out register data */
-	HAL_SPI_Transmit_IT(&hspi1, RF_Data.CircularDataBuffer, len);
+	/*HAL_SPI_Transmit_IT(&hspi1, RF_Data.CircularDataBuffer, len);
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
-}
+}*/
 
 void setAddressData(uint8_t regAddress, uint8_t len)
 {
@@ -118,16 +118,18 @@ void setAddressData(uint8_t regAddress, uint8_t len)
 
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 	/* Send out register data */
-	HAL_SPI_Transmit_IT(&hspi1, RF_Data.CircularDataBuffer, len);
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
+	HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, len);
 }
 
 void sendPayloadReadRequest(void)
 {
 	resetDataBuffer();
 
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
+	RF_Data.CircularDataBuffer[0] = R_RX_PAYLOAD;
 
-	HAL_SPI_Transmit_IT(&hspi1, (uint8_t*)R_RX_PAYLOAD, 1);
-	HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, 32);
+	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
+	HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, 2);
+
+	resetDataBuffer();
+	getRegister(CONFIG);
 }
