@@ -43,6 +43,7 @@ void getRegister(uint8_t regAddress);
 void getRegisterMultipleData(uint8_t regAddress, uint8_t len);
 
 void setRegister(uint8_t regAddress, uint8_t data);
+void setRegisterUnsafely(uint8_t regAddress, uint8_t data);
 void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len);
 
 void setAddressData(uint8_t regAddress, uint8_t len);

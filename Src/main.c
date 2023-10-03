@@ -123,7 +123,6 @@ int main(void)
 
   while (1)
   {
-	  resetDataBuffer();
 	  /*switch (Transciever_stateMachine) {
 	  	case SEND_PAYLOAD_LENGTH_READ_REQUEST:
 	  		transmit_data = R_RX_PL_WID;
@@ -165,7 +164,7 @@ int main(void)
 	//getRegister(CONFIG);
 	//HAL_Delay(100);
 	sendPayloadReadRequest();
-	HAL_Delay(1000);
+	HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
