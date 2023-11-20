@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <nRF24l01_Handler.h>
+#include "SPI_Handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -281,7 +282,7 @@ static void MX_SPI1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN SPI1_Init 2 */
-
+  SPI_INIT();
   /* USER CODE END SPI1_Init 2 */
 
 }
@@ -480,20 +481,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_SPI_RxCpltCallback (SPI_HandleTypeDef * hspi)
-{
-	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
-	//HAL_SPI_Receive(&hspi1, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
-	receive_IT_flag = TRUE;
-}
 
-void HAL_SPI_TxCpltCallback (SPI_HandleTypeDef * hspi)
-{
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
-	//HAL_SPI_Receive(&hspi1, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
-	transmit_IT_flag= TRUE;
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
-}
 
 /* USER CODE END 4 */
 
