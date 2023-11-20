@@ -82,7 +82,6 @@ void resetDataBuffer()
 
 void getRegister(uint8_t regAddress)
 {
-	uint8_t ret = 0;
 	/* Set command to read the registers */
 	regAddress |= R_REGISTER;
 
@@ -92,7 +91,7 @@ void getRegister(uint8_t regAddress)
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 
 	/* Send command to read the given register address and read the status at the same time */
-	ret = HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, 2);
+	HAL_SPI_Receive_IT(&hspi1, RF_Data.CircularDataBuffer, 2);
 }
 
 /*void getRegisterMultipleData(uint8_t regAddress, uint8_t len)

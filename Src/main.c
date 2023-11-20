@@ -65,7 +65,6 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-nRF24L01_status Transciever_stateMachine = SEND_PAYLOAD_LENGTH_READ_REQUEST;
 uint8_t receive = 0;
 uint8_t transmit_data = 0;
 uint8_t receiveLen = 0;

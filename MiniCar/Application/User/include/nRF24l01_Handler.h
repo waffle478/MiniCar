@@ -19,13 +19,6 @@ enum ResetBuffer{
 	RESET_ALL_BUFFER
 };
 
-typedef enum nRF24L01_status{
-	SEND_PAYLOAD_LENGTH_READ_REQUEST,
-	RECEIVE_MESSAGE_LENGTH,
-	SEND_PAYLOAD_READ_REQUEST,
-	RECEIVE_PAYLOAD,
-}nRF24L01_status;
-
 #include <nRF24l01_MemoryMap.h>
 #include "stm32l4xx_hal.h"
 
@@ -47,6 +40,8 @@ void setRegisterUnsafely(uint8_t regAddress, uint8_t data);
 void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len);
 
 void setAddressData(uint8_t regAddress, uint8_t len);
+
+void sendCommand(uint8_t command);
 
 void sendPayloadReadRequest(void);
 
