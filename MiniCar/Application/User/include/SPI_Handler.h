@@ -57,6 +57,11 @@ typedef struct{
 	SPI_HandleTypeDef* HalSpiPort;
 }SPI_Data;
 
+typedef struct{
+	SPI_message ReceivedMessage;
+	uint8_t		Status;
+}SPI_ReturnedMessage;
+
 uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress);
 uint8_t SPI_INIT(SPI_HandleTypeDef *);
 void SPI_EmptyQueue();

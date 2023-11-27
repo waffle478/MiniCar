@@ -9,6 +9,7 @@
 
 RF_Module RF_Data;
 
+
 void Setup(void)
 {
 	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
@@ -91,14 +92,9 @@ void getRegister(uint8_t regAddress)
 	RF_Data.Message.MessageLenght = 2;
 
 	SPI_AddMessageToQueue(&RF_Data.Message);
-
-	/* Enable slave */
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
-
-	/* Send command to read the given register address and read the status at the same time */
-	//HAL_SPI_Receive_IT(&hspi1, RF_Data.Message.CircularDataBuffer, 2);
 }
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcomment"
 /*void getRegisterMultipleData(uint8_t regAddress, uint8_t len)
 {
 	/* Set command to read the registers */
@@ -108,13 +104,14 @@ void getRegister(uint8_t regAddress)
 	/*HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
 
 	/* Send command to read the given register address and read the status at the same time */
-	/*HAL_SPI_TransmitReceive(&hspi1, &regAddress, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
+	/*HAL_SPI_TransmitReceive(&hspi1, &regAddress, &RF_Data.Status, 1, DEFAULT_TIMEOUT);*/
 	/* Read the register data */
-	//HAL_SPI_Receive(&hspi1, RF_Data.Message.CircularDataBuffer, 32, DEFAULT_TIMEOUT);
+	//HAL_SPI_Receive(&hspi1, RF_Data.Message.CircularDataBuffer, 32, DEFAULT_TIMEOUT);*/
 
 	/* Disable slave */
 	/*HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 }*/
+#pragma GCC diagnostic pop
 
 void setRegister(uint8_t regAddress, uint8_t data)
 {
@@ -127,10 +124,6 @@ void setRegister(uint8_t regAddress, uint8_t data)
 
 	RF_Data.Message.MessageLenght = 2;
 	SPI_AddMessageToQueue(&RF_Data.Message);
-
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
-	/* Send out register data */
-	//HAL_SPI_Receive_IT(&hspi1, RF_Data.Message.CircularDataBuffer, 2);
 }
 
 void setRegisterUnsafely(uint8_t regAddress, uint8_t data)
@@ -141,12 +134,9 @@ void setRegisterUnsafely(uint8_t regAddress, uint8_t data)
 
 	RF_Data.Message.MessageLenght = 2;
 	SPI_AddMessageToQueue(&RF_Data.Message);
-
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
-	/* Send out register data */
-	//HAL_SPI_Receive_IT(&hspi1, RF_Data.Message.CircularDataBuffer, 2);
 }
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcomment"
 /*void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
 {
 	/* Read the data from the register so we do not write data we don't want to write */
@@ -166,6 +156,7 @@ void setRegisterUnsafely(uint8_t regAddress, uint8_t data)
 	/*HAL_SPI_Transmit_IT(&hspi1, RF_Data.Message.CircularDataBuffer, len);
 	HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
 }*/
+#pragma GCC diagnostic pop
 
 void setAddressData(uint8_t regAddress, uint8_t len)
 {
@@ -177,10 +168,6 @@ void setAddressData(uint8_t regAddress, uint8_t len)
 
 	RF_Data.Message.MessageLenght = len;
 	SPI_AddMessageToQueue(&RF_Data.Message);
-
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
-	/* Send out register data */
-	//HAL_SPI_Receive_IT(&hspi1, RF_Data.Message.CircularDataBuffer, len);
 }
 
 void sendCommand(uint8_t command)
@@ -189,19 +176,10 @@ void sendCommand(uint8_t command)
 
 	RF_Data.Message.MessageLenght = 2;
 	SPI_AddMessageToQueue(&RF_Data.Message);
-
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
-	/* Send out register data */
-	//HAL_SPI_Receive_IT(&hspi1, RF_Data.Message.CircularDataBuffer, 2);
 }
 
 void sendPayloadReadRequest(void)
 {
-	//RF_Data.Message.CircularDataBuffer[0] = R_RX_PAYLOAD;
-
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, RESET);
-	//HAL_SPI_Receive_IT(&hspi1, RF_Data.Message.CircularDataBuffer, 2);
-
 	resetDataBuffer();
 	getRegister(0xFF);
 	sendCommand(R_RX_PAYLOAD);
