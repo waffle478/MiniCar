@@ -13,18 +13,31 @@
 #define MODULE_TYPE_GYRO		2u
 #define MODULE_TYPE_DISTANCE	3u
 
-#define QUEUE_MAX_MESSAGES		5u
+#define QUEUE_MAX_MESSAGES		30u
 
-#define SS_ENABLE_NRF01			1u
-#define SS_REGISTER_NRF01		6u
+#include "stm32l4xx_hal.h"
+
+#define SS_ENABLE_NRF01			GPIO_PIN_4
+#define SS_REGISTER_NRF01		GPIOA
+
+#ifdef GYRO
+	#if GYRO == 1
 
 #define SS_ENABLE_GYRO			2u
 #define SS_REGISTER_GYRO		7u
 
+#endif
+#endif
+
+
+#ifdef DISTANCE
+	#if DISTANCE == 1
+
 #define SS_ENABLE_DISTANCE		3u
 #define SS_REGISTER_DISTANCE	8u
 
-#include "stm32l4xx_hal.h"
+	#endif
+#endif
 
 typedef struct
 {
@@ -45,7 +58,7 @@ typedef struct{
 }SPI_Data;
 
 uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress);
-uint8_t SPI_INIT();
+uint8_t SPI_INIT(SPI_HandleTypeDef *);
 void SPI_EmptyQueue();
 void SPI_AdvanceQueue();
 void SPI_Cycle();

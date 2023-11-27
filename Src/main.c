@@ -163,7 +163,7 @@ int main(void)
 	}*/
 	//getRegister(CONFIG);
 	//HAL_Delay(100);
-	sendPayloadReadRequest();
+	SPI_Cycle();
 	HAL_Delay(100);
     /* USER CODE END WHILE */
 
@@ -282,7 +282,7 @@ static void MX_SPI1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN SPI1_Init 2 */
-  SPI_INIT();
+  SPI_INIT(&hspi1);
   /* USER CODE END SPI1_Init 2 */
 
 }

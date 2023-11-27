@@ -6,13 +6,16 @@
  */
 #include "SPI_Handler.h"
 #include "Statuses.h"
+#include <stdio.h>
+#include <string.h>
 
 SPI_Data Data;
 
 uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress){
 	uint8_t ret = 0;
 	if (QUEUE_MAX_MESSAGES > Data.Queue.QueueLength) {
-		Data.Queue.Queue[Data.Queue.QueueLength] = &messageAddress;
+		//Data.Queue.Queue[Data.Queue.QueueLength] = &messageAddress;
+		memcpy(&Data.Queue.Queue[Data.Queue.QueueLength], messageAddress, 32);
 		Data.Queue.QueueLength++;
 		ret = 1; //Message added to queue
 	}
@@ -21,8 +24,9 @@ uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress){
 }
 
 
-uint8_t SPI_INIT(){
-
+uint8_t SPI_INIT(SPI_HandleTypeDef *port){
+	Data.HalSpiPort = port;
+	return 0;
 }
 
 void SPI_EmptyQueue(){
@@ -61,12 +65,17 @@ void SPI_EnableSSPin(uint8_t Type){
 		case MODULE_TYPE_NRF01:
 			HAL_GPIO_WritePin(SS_REGISTER_NRF01, SS_ENABLE_NRF01, RESET);
 			break;
+#if GYRO == 1
 		case MODULE_TYPE_GYRO:
 			HAL_GPIO_WritePin(SS_REGISTER_GYRO, SS_ENABLE_GYRO, RESET);
 			break;
+#endif
+
+#if DISTANCE == 1
 		case MODULE_TYPE_DISTANCE:
 			HAL_GPIO_WritePin(SS_REGISTER_DISTANCE, SS_ENABLE_DISTANCE, RESET);
 			break;
+#endif
 		default:
 			/* DO NOTHING */
 			break;
@@ -78,12 +87,17 @@ void SPI_DisableSSPin(uint8_t Type){
 		case MODULE_TYPE_NRF01:
 			HAL_GPIO_WritePin(SS_REGISTER_NRF01, SS_ENABLE_NRF01, SET);
 			break;
+#if GYRO == 1
 		case MODULE_TYPE_GYRO:
 			HAL_GPIO_WritePin(SS_REGISTER_GYRO, SS_ENABLE_GYRO, SET);
 			break;
+#endif
+
+#if DISTANCE == 1
 		case MODULE_TYPE_DISTANCE:
 			HAL_GPIO_WritePin(SS_REGISTER_DISTANCE, SS_ENABLE_DISTANCE, SET);
 			break;
+#endif
 		default:
 			/* DO NOTHING */
 			break;

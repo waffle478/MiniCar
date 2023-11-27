@@ -24,8 +24,7 @@ enum ResetBuffer{
 
 typedef struct{
 	uint8_t 	Status;
-	uint8_t		State;
-	uint8_t 	CircularDataBuffer[32];
+	SPI_message Message;
 }RF_Module;
 
 void Setup(void);
