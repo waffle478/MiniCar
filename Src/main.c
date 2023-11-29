@@ -66,7 +66,7 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t receive = 0;
+uint8_t counter = 32;
 uint8_t transmit_data = 0;
 uint8_t receiveLen = 0;
 volatile uint8_t receive_IT_flag = 0;
@@ -161,10 +161,15 @@ int main(void)
 		default:
 			break;
 	}*/
-	//getRegister(CONFIG);
-	//HAL_Delay(100);
+	/*getRegister(CONFIG);*/
+	/*HAL_Delay(100);*/
+	counter--;
+	if (counter == 0) {
+		sendPayloadReadRequest();
+		counter = 50;
+	}
 	SPI_Cycle();
-	HAL_Delay(100);
+	HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

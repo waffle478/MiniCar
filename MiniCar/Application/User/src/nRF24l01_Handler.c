@@ -9,12 +9,11 @@
 
 RF_Module RF_Data;
 
-
 void Setup(void)
 {
 	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
 
-	resetDataBuffer();
+	resetMessage();
 	getRegister(CONFIG);
 
 	sendCommand(FLUSH_RX);
@@ -23,7 +22,7 @@ void Setup(void)
 	setRegisterUnsafely(STATUS, 0x70);
 
 	RF_Data.Status = 0;
-	resetDataBuffer();
+	resetMessage();
 	setRegisterUnsafely(EN_RXADDR, 0x02);
 
 
@@ -39,7 +38,7 @@ void Setup(void)
 	setRegisterUnsafely(RX_PW_P0, 0x00);
 	setRegisterUnsafely(RX_PW_P1, 0x01);
 
-	resetDataBuffer();
+	resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '2';
 	RF_Data.Message.CircularDataBuffer[2] = 'N';
@@ -48,7 +47,7 @@ void Setup(void)
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
 	setAddressData(RX_ADDR_P0, 6);
-	resetDataBuffer();
+	resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '1';
 	RF_Data.Message.CircularDataBuffer[2] = 'N';
@@ -57,7 +56,7 @@ void Setup(void)
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
 	setAddressData(RX_ADDR_P1, 6);
-	resetDataBuffer();
+	resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '2';
 	RF_Data.Message.CircularDataBuffer[2] = 'N';
@@ -66,21 +65,13 @@ void Setup(void)
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
 	setAddressData(TX_ADDR, 6);
-	resetDataBuffer();
+	resetMessage();
 
 	/* Start up the module */
 	setRegister(CONFIG, (0x0f));
 
 	getRegister(RX_PW_P0);
-	resetDataBuffer();
-}
-
-void resetDataBuffer()
-{
-	/* TODO: Use other way to clear an array. */
-	for (int i = 0; i < 30; ++i) {
-		RF_Data.Message.CircularDataBuffer[i] = 0xFF;
-	}
+	resetMessage();
 }
 
 void getRegister(uint8_t regAddress)
@@ -118,8 +109,12 @@ void setRegister(uint8_t regAddress, uint8_t data)
 	/* Read the data from the register so we do not write data we don't want to write */
 	getRegister(regAddress);
 
+	/* Setup message so the earlier sent message will be used to set the data */
+	RF_Data.Message.RelatedTo.EarlierMessage = TRUE;
+	RF_Data.Message.RelatedTo.Byte = 1;
+
 	/* Assemble the modified data. */
-	RF_Data.Message.CircularDataBuffer[1] |= data;
+	RF_Data.Message.CircularDataBuffer[1] = data;
 	RF_Data.Message.CircularDataBuffer[0] = regAddress | W_REGISTER;
 
 	RF_Data.Message.MessageLenght = 2;
@@ -180,7 +175,12 @@ void sendCommand(uint8_t command)
 
 void sendPayloadReadRequest(void)
 {
-	resetDataBuffer();
-	getRegister(0xFF);
+	resetMessage();
 	sendCommand(R_RX_PAYLOAD);
+}
+
+void resetMessage()
+{
+	SPI_resetMessage(&RF_Data.Message);
+	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
 }

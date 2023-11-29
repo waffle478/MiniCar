@@ -16,6 +16,7 @@
 #define QUEUE_MAX_MESSAGES		30u
 
 #include "stm32l4xx_hal.h"
+#include "Statuses.h"
 
 #define SS_ENABLE_NRF01			GPIO_PIN_4
 #define SS_REGISTER_NRF01		GPIOA
@@ -41,14 +42,21 @@
 
 typedef struct
 {
-	uint8_t 	CircularDataBuffer[32];
-	uint8_t		MessageLenght;
-	uint8_t		ModuleType;
+	uint8_t 	EarlierMessage;
+	uint8_t		Byte;
+}RelatedMessage;
+
+typedef struct
+{
+	uint8_t 		CircularDataBuffer[32];
+	uint8_t			MessageLenght;
+	RelatedMessage	RelatedTo;
+	uint8_t			ModuleType;
 }SPI_message;
 
 typedef struct{
 	uint8_t 		Status;
-	SPI_message*	Queue[QUEUE_MAX_MESSAGES];
+	SPI_message		Queue[QUEUE_MAX_MESSAGES];
 	uint8_t			QueueLength;
 }SPI_queue;
 
@@ -57,11 +65,6 @@ typedef struct{
 	SPI_HandleTypeDef* HalSpiPort;
 }SPI_Data;
 
-typedef struct{
-	SPI_message ReceivedMessage;
-	uint8_t		Status;
-}SPI_ReturnedMessage;
-
 uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress);
 uint8_t SPI_INIT(SPI_HandleTypeDef *);
 void SPI_EmptyQueue();
@@ -69,5 +72,6 @@ void SPI_AdvanceQueue();
 void SPI_Cycle();
 void SPI_EnableSSPin(uint8_t Type);
 void SPI_DisableSSPin(uint8_t Type);
+void SPI_resetMessage(SPI_message *message);
 
 #endif /* APPLICATION_USER_INCLUDE_SPI_HANDLER_H_ */

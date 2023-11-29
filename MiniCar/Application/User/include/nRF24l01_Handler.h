@@ -25,11 +25,10 @@ enum ResetBuffer{
 typedef struct{
 	uint8_t 	Status;
 	SPI_message Message;
+	SPI_message	StagedMessage;
 }RF_Module;
 
 void Setup(void);
-
-void resetDataBuffer();
 
 void getRegister(uint8_t regAddress);
 void getRegisterMultipleData(uint8_t regAddress, uint8_t len);
@@ -43,6 +42,8 @@ void setAddressData(uint8_t regAddress, uint8_t len);
 void sendCommand(uint8_t command);
 
 void sendPayloadReadRequest(void);
+
+void resetMessage();
 
 extern SPI_HandleTypeDef hspi1;
 extern RF_Module RF_Data;
