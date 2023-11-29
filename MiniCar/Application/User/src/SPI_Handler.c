@@ -48,9 +48,11 @@ void SPI_Cycle(){
 	switch (Data.Queue.Status) {
 		case STATUS_WAITING:
 			/* Enable correct module to communicate with and send message */
-			SPI_EnableSSPin(Data.Queue.Queue[0].ModuleType);
-			HAL_SPI_Receive_IT(Data.HalSpiPort, Data.Queue.Queue[0].CircularDataBuffer, Data.Queue.Queue[0].MessageLenght);
-			Data.Queue.Status = STATUS_TRANCIEVING;
+			if (Data.Queue.QueueLength != 0 && Data.Queue.Queue[0].MessageLenght != 0) {
+				SPI_EnableSSPin(Data.Queue.Queue[0].ModuleType);
+				HAL_SPI_Receive_IT(Data.HalSpiPort, Data.Queue.Queue[0].CircularDataBuffer, Data.Queue.Queue[0].MessageLenght);
+				Data.Queue.Status = STATUS_TRANCIEVING;
+			}
 			break;
 		case STATUS_RECEIVED_MESSAGE:
 			/* If the next message is related to the currently set message then transfer the needed data */
