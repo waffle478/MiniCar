@@ -36,11 +36,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/MiniCar.ioc</locationURI>
 		</link>
 		<link>
-			<name>include</name>
-			<type>2</type>
-			<location>C:/Users/Csabi/git/MiniCar/MiniCar/Application/User/include</location>
-		</link>
-		<link>
 			<name>Application/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/main.c</locationURI>

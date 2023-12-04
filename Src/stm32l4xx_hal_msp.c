@@ -240,7 +240,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
     PA8     ------> TIM1_CH1
     PA9     ------> TIM1_CH2
     */
-    GPIO_InitStruct.Pin = MainMotor_pwm_CH1_Pin|MainMotor_pwm_CH2_Pin;
+    GPIO_InitStruct.Pin = MainMotor_pwm_Forward_Pin|MainMotor_pwm_Backward_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -262,7 +262,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
     PA6     ------> TIM3_CH1
     PA7     ------> TIM3_CH2
     */
-    GPIO_InitStruct.Pin = SteeringMotor_pwm_CH1_Pin|SteeringMotor_pwm_CH2_Pin;
+    GPIO_InitStruct.Pin = SteeringMotor_pwm_Forward_Pin|SteeringMotor_pwm_Backward_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

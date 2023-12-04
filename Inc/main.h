@@ -63,18 +63,18 @@ void Error_Handler(void);
 #define SPI_NSS_GPIO_Port GPIOA
 #define SteeringMotor_Sleep_Pin GPIO_PIN_5
 #define SteeringMotor_Sleep_GPIO_Port GPIOA
-#define SteeringMotor_pwm_CH1_Pin GPIO_PIN_6
-#define SteeringMotor_pwm_CH1_GPIO_Port GPIOA
-#define SteeringMotor_pwm_CH2_Pin GPIO_PIN_7
-#define SteeringMotor_pwm_CH2_GPIO_Port GPIOA
+#define SteeringMotor_pwm_Forward_Pin GPIO_PIN_6
+#define SteeringMotor_pwm_Forward_GPIO_Port GPIOA
+#define SteeringMotor_pwm_Backward_Pin GPIO_PIN_7
+#define SteeringMotor_pwm_Backward_GPIO_Port GPIOA
 #define MainMotor_Fault_Pin GPIO_PIN_10
 #define MainMotor_Fault_GPIO_Port GPIOB
 #define MainMotor_Sleep_Pin GPIO_PIN_7
 #define MainMotor_Sleep_GPIO_Port GPIOC
-#define MainMotor_pwm_CH1_Pin GPIO_PIN_8
-#define MainMotor_pwm_CH1_GPIO_Port GPIOA
-#define MainMotor_pwm_CH2_Pin GPIO_PIN_9
-#define MainMotor_pwm_CH2_GPIO_Port GPIOA
+#define MainMotor_pwm_Forward_Pin GPIO_PIN_8
+#define MainMotor_pwm_Forward_GPIO_Port GPIOA
+#define MainMotor_pwm_Backward_Pin GPIO_PIN_9
+#define MainMotor_pwm_Backward_GPIO_Port GPIOA
 #define SteeringMotor_Fault_Pin GPIO_PIN_6
 #define SteeringMotor_Fault_GPIO_Port GPIOB
 

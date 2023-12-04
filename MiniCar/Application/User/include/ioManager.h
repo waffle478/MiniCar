@@ -8,9 +8,10 @@
 #ifndef APPLICATION_USER_INCLUDE_IOMANAGER_H_
 #define APPLICATION_USER_INCLUDE_IOMANAGER_H_
 
-#include <stm32l4xx_hal.h>
 #include <MotorController.h>
 
-void setPWM(TIM_HandleTypeDef *timer,int channel, int value);
+void setPWM(TIM_HandleTypeDef *timer,__IO uint32_t channel, int value);
+void IO_ApplySpeedAndDir(void);
+void IO_setMotorSpeedAndDir(Motor mot);
 
 #endif /* APPLICATION_USER_INCLUDE_IOMANAGER_H_ */

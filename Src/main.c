@@ -66,7 +66,7 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t counter = 32;
+uint8_t counter = 160;
 uint8_t transmit_data = 0;
 uint8_t receiveLen = 0;
 volatile uint8_t receive_IT_flag = 0;
@@ -107,10 +107,12 @@ int main(void)
   MX_CRC_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+
+
+
+
+  //HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  //HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
 
   Setup();
@@ -166,10 +168,10 @@ int main(void)
 	counter--;
 	if (counter == 0) {
 		sendPayloadReadRequest();
-		counter = 50;
+		counter = 3;
 	}
 	SPI_Cycle();
-	HAL_Delay(50);
+	HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

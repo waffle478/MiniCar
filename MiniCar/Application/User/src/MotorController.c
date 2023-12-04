@@ -10,9 +10,8 @@
 
 MotorController Motors;
 
-void MC_GetMotors(){
-	//return Motors;
-
+MotorController MC_GetMotors(){
+	return Motors;
 }
 
 int MC_SetSpeedAndDirection(SelectedMotor motor, unsigned char speed, unsigned char direction){
@@ -61,3 +60,4 @@ int MC_SetSleep(SelectedMotor motor, unsigned char sleep){
 	}
 	return OK;
 }
+
