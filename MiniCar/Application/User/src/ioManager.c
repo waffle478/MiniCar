@@ -34,9 +34,11 @@ void IO_setMotorSpeedAndDir(Motor mot)
 			case DIRECTION_BACKWARD:
 				CCRx_OF(mot, CCR1) = 0;
 				CCRx_OF(mot, CCR2) = mot.Speed;
+				break;
 			case DIRECTION_NONE:
 				CCRx_OF(mot, CCR1) = 0;
 				CCRx_OF(mot, CCR2) = 0;
+				break;
 			default:
 				/* DO NOTHING */
 				break;
@@ -52,9 +54,11 @@ void IO_setMotorSpeedAndDir(Motor mot)
 			case DIRECTION_BACKWARD:
 				CCRx_OF(mot, CCR1) = mot.Speed;
 				CCRx_OF(mot, CCR2) = 100;
+				break;
 			case DIRECTION_NONE:
 				CCRx_OF(mot, CCR1) = 100;
 				CCRx_OF(mot, CCR2) = 100;
+				break;
 			default:
 				/* DO NOTHING */
 				break;

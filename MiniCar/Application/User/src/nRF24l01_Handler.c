@@ -9,7 +9,7 @@
 
 RF_Module RF_Data;
 
-void Setup(void)
+void RF_Setup(void)
 {
 	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
 

@@ -64,6 +64,7 @@ typedef struct{
 
 MotorController MC_GetMotors();
 
+void MC_Init(TIM_HandleTypeDef *mainMotTimer, TIM_HandleTypeDef *steeringMotTimer);
 int MC_SetSpeedAndDirection(SelectedMotor motor, unsigned char speed, unsigned char direction);
 int MC_SetDecay(SelectedMotor motor, unsigned char decay);
 int MC_SetSleep(SelectedMotor motor, unsigned char sleep);

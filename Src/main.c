@@ -23,6 +23,8 @@
 /* USER CODE BEGIN Includes */
 #include <nRF24l01_Handler.h>
 #include "SPI_Handler.h"
+#include "ioManager.h"
+#include "MotorController.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,63 +110,20 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
+  MC_Init(&htim1, &htim3);
 
+  IO_StartPWM();
 
-
-  //HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  //HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-
-
-  Setup();
+  RF_Setup();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  //unsigned int pwm_value = 0;
 
   while (1)
   {
-	  /*switch (Transciever_stateMachine) {
-	  	case SEND_PAYLOAD_LENGTH_READ_REQUEST:
-	  		transmit_data = R_RX_PL_WID;
-	  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-			HAL_SPI_Transmit_IT(&hspi1, &transmit_data, 1);
-			Transciever_stateMachine = RECEIVE_MESSAGE_LENGTH;
-	  		break;
-	  	case RECEIVE_MESSAGE_LENGTH:
-	  		if(transmit_IT_flag == TRUE) {
-	  			transmit_IT_flag = FALSE;
 
-	  			if ((RF_Data.Status & 0b1110) <= 5) {
-					HAL_SPI_Receive(&hspi1, &receiveLen, 1, DEFAULT_TIMEOUT);
-
-					if (receiveLen > 0) {
-						Transciever_stateMachine = SEND_PAYLOAD_READ_REQUEST;
-					} else {
-						Transciever_stateMachine = SEND_PAYLOAD_LENGTH_READ_REQUEST;
-					}
-				} else {
-					Transciever_stateMachine = SEND_PAYLOAD_LENGTH_READ_REQUEST;
-				}
-			}
-	  		break;
-		case SEND_PAYLOAD_READ_REQUEST:
-			sendPayloadReadRequest();
-			Transciever_stateMachine = RECEIVE_PAYLOAD;
-			break;
-		case RECEIVE_PAYLOAD:
-			if(receive_IT_flag == TRUE) {
-				receive_IT_flag = FALSE;
-				HAL_SPI_Receive(&hspi1, RF_Data.receiveDataBuffer, receiveLen, DEFAULT_TIMEOUT);
-				HAL_Delay(1000);
-			}
-			break;
-		default:
-			break;
-	}*/
-	/*getRegister(CONFIG);*/
-	/*HAL_Delay(100);*/
 	counter--;
 	if (counter == 0) {
 		sendPayloadReadRequest();

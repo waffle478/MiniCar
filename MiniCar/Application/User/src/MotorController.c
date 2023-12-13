@@ -14,6 +14,23 @@ MotorController MC_GetMotors(){
 	return Motors;
 }
 
+void MC_Init(TIM_HandleTypeDef *mainMotTimer, TIM_HandleTypeDef *steeringMotTimer)
+{
+	Motors.MainMotor.BrakeStatus 	= BRAKE_NONE;
+	Motors.MainMotor.Decay 			= DECAY_HIGH_IMPEDANCE;
+	Motors.MainMotor.Direction 		= DIRECTION_NONE;
+	Motors.MainMotor.Sleep 			= 0;
+	Motors.MainMotor.Speed 			= MOTORSPEED_ZERO;
+	Motors.MainMotor.timerHandler 	= mainMotTimer;
+
+	Motors.Steering.BrakeStatus 	= BRAKE_NONE;
+	Motors.Steering.Decay 			= DECAY_HIGH_IMPEDANCE;
+	Motors.Steering.Direction 		= DIRECTION_NONE;
+	Motors.Steering.Sleep 			= 0;
+	Motors.Steering.Speed 			= MOTORSPEED_ZERO;
+	Motors.Steering.timerHandler 	= steeringMotTimer;
+}
+
 int MC_SetSpeedAndDirection(SelectedMotor motor, unsigned char speed, unsigned char direction){
 	switch (motor) {
 		case Steering:

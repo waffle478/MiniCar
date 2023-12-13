@@ -10,6 +10,7 @@
 
 #include <MotorController.h>
 
+void IO_StartPWM();
 void setPWM(TIM_HandleTypeDef *timer,__IO uint32_t channel, int value);
 void IO_ApplySpeedAndDir(void);
 void IO_setMotorSpeedAndDir(Motor mot);

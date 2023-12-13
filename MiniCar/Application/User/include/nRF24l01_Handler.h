@@ -28,7 +28,7 @@ typedef struct{
 	SPI_message	StagedMessage;
 }RF_Module;
 
-void Setup(void);
+void RF_Setup(void);
 
 void getRegister(uint8_t regAddress);
 void getRegisterMultipleData(uint8_t regAddress, uint8_t len);
