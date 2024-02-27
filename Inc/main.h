@@ -59,8 +59,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SPI_NSS_Pin GPIO_PIN_4
-#define SPI_NSS_GPIO_Port GPIOA
+#define SPI_NSS_RF_MODULE_Pin GPIO_PIN_4
+#define SPI_NSS_RF_MODULE_GPIO_Port GPIOA
 #define SteeringMotor_Sleep_Pin GPIO_PIN_5
 #define SteeringMotor_Sleep_GPIO_Port GPIOA
 #define SteeringMotor_pwm_Forward_Pin GPIO_PIN_6
@@ -69,6 +69,8 @@ void Error_Handler(void);
 #define SteeringMotor_pwm_Backward_GPIO_Port GPIOA
 #define MainMotor_Fault_Pin GPIO_PIN_10
 #define MainMotor_Fault_GPIO_Port GPIOB
+#define SPI_NSS_GYRO_MODULE_Pin GPIO_PIN_13
+#define SPI_NSS_GYRO_MODULE_GPIO_Port GPIOB
 #define MainMotor_Sleep_Pin GPIO_PIN_7
 #define MainMotor_Sleep_GPIO_Port GPIOC
 #define MainMotor_pwm_Forward_Pin GPIO_PIN_8
