@@ -13,32 +13,32 @@ void RF_Setup(void)
 {
 	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
 
-	resetMessage();
-	getRegister(CONFIG);
+	RF_resetMessage();
+	RF_getRegister(CONFIG);
 
-	sendCommand(FLUSH_RX);
+	RF_sendCommand(FLUSH_RX);
 
-	setRegisterUnsafely(CONFIG, 0x00);
-	setRegisterUnsafely(STATUS, 0x70);
+	RF_setRegisterUnsafely(CONFIG, 0x00);
+	RF_setRegisterUnsafely(STATUS, 0x70);
 
 	RF_Data.Status = 0;
-	resetMessage();
-	setRegisterUnsafely(EN_RXADDR, 0x02);
+	RF_resetMessage();
+	RF_setRegisterUnsafely(EN_RXADDR, 0x02);
 
 
-	setRegister(RX_PW_P0, 0x3f);
+	RF_setRegister(RX_PW_P0, 0x3f);
 
-	setRegister(EN_AA, 0x3f);
+	RF_setRegister(EN_AA, 0x3f);
 
-	setRegisterUnsafely(RF_SETUP, 0x06);
-	setRegister(RF_CH, 0x4c);
+	RF_setRegisterUnsafely(RF_SETUP, 0x06);
+	RF_setRegister(RF_CH, 0x4c);
 
-	setRegisterUnsafely(SETUP_AW, 0x03);
-	setRegisterUnsafely(SETUP_RETR, 0x4f);
-	setRegisterUnsafely(RX_PW_P0, 0x00);
-	setRegisterUnsafely(RX_PW_P1, 0x01);
+	RF_setRegisterUnsafely(SETUP_AW, 0x03);
+	RF_setRegisterUnsafely(SETUP_RETR, 0x4f);
+	RF_setRegisterUnsafely(RX_PW_P0, 0x00);
+	RF_setRegisterUnsafely(RX_PW_P1, 0x01);
 
-	resetMessage();
+	RF_resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '2';
 	RF_Data.Message.CircularDataBuffer[2] = 'N';
@@ -46,8 +46,8 @@ void RF_Setup(void)
 	RF_Data.Message.CircularDataBuffer[4] = 'd';
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
-	setAddressData(RX_ADDR_P0, 6);
-	resetMessage();
+	RF_setAddressData(RX_ADDR_P0, 6);
+	RF_resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '1';
 	RF_Data.Message.CircularDataBuffer[2] = 'N';
@@ -55,8 +55,8 @@ void RF_Setup(void)
 	RF_Data.Message.CircularDataBuffer[4] = 'd';
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
-	setAddressData(RX_ADDR_P1, 6);
-	resetMessage();
+	RF_setAddressData(RX_ADDR_P1, 6);
+	RF_resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '2';
 	RF_Data.Message.CircularDataBuffer[2] = 'N';
@@ -64,17 +64,17 @@ void RF_Setup(void)
 	RF_Data.Message.CircularDataBuffer[4] = 'd';
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
-	setAddressData(TX_ADDR, 6);
-	resetMessage();
+	RF_setAddressData(TX_ADDR, 6);
+	RF_resetMessage();
 
 	/* Start up the module */
-	setRegister(CONFIG, (0x0f));
+	RF_setRegister(CONFIG, (0x0f));
 
-	getRegister(RX_PW_P0);
-	resetMessage();
+	RF_getRegister(RX_PW_P0);
+	RF_resetMessage();
 }
 
-void getRegister(uint8_t regAddress)
+void RF_getRegister(uint8_t regAddress)
 {
 	/* Set command to read the registers */
 	regAddress |= R_REGISTER;
@@ -104,10 +104,10 @@ void getRegister(uint8_t regAddress)
 }*/
 #pragma GCC diagnostic pop
 
-void setRegister(uint8_t regAddress, uint8_t data)
+void RF_setRegister(uint8_t regAddress, uint8_t data)
 {
 	/* Read the data from the register so we do not write data we don't want to write */
-	getRegister(regAddress);
+	RF_getRegister(regAddress);
 
 	/* Setup message so the earlier sent message will be used to set the data */
 	RF_Data.Message.RelatedTo.EarlierMessage = TRUE;
@@ -121,7 +121,7 @@ void setRegister(uint8_t regAddress, uint8_t data)
 	SPI_AddMessageToQueue(&RF_Data.Message);
 }
 
-void setRegisterUnsafely(uint8_t regAddress, uint8_t data)
+void RF_setRegisterUnsafely(uint8_t regAddress, uint8_t data)
 {
 	/* Assemble the modified data. */
 	RF_Data.Message.CircularDataBuffer[1] = data;
@@ -153,7 +153,7 @@ void setRegisterUnsafely(uint8_t regAddress, uint8_t data)
 }*/
 #pragma GCC diagnostic pop
 
-void setAddressData(uint8_t regAddress, uint8_t len)
+void RF_setAddressData(uint8_t regAddress, uint8_t len)
 {
 	/* Read the data from the register so we do not write data we don't want to write */
 	//getRegister(regAddress);
@@ -165,7 +165,7 @@ void setAddressData(uint8_t regAddress, uint8_t len)
 	SPI_AddMessageToQueue(&RF_Data.Message);
 }
 
-void sendCommand(uint8_t command)
+void RF_sendCommand(uint8_t command)
 {
 	RF_Data.Message.CircularDataBuffer[0] = command;
 
@@ -173,13 +173,13 @@ void sendCommand(uint8_t command)
 	SPI_AddMessageToQueue(&RF_Data.Message);
 }
 
-void sendPayloadReadRequest(void)
+void RF_sendPayloadReadRequest(void)
 {
-	resetMessage();
-	sendCommand(R_RX_PAYLOAD);
+	RF_resetMessage();
+	RF_sendCommand(R_RX_PAYLOAD);
 }
 
-void resetMessage()
+void RF_resetMessage()
 {
 	SPI_resetMessage(&RF_Data.Message);
 	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;

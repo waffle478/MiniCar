@@ -15,30 +15,14 @@
 
 #define QUEUE_MAX_MESSAGES		30u
 
+#define ENABLED		1
+#define DISABLED	0
+
+#define GYRO		ENABLED
+
+#include "main.h"
 #include "stm32l4xx_hal.h"
 #include "Statuses.h"
-
-#define SS_ENABLE_NRF01			GPIO_PIN_4
-#define SS_REGISTER_NRF01		GPIOA
-
-#ifdef GYRO
-	#if GYRO == 1
-
-#define SS_ENABLE_GYRO			2u
-#define SS_REGISTER_GYRO		7u
-
-#endif
-#endif
-
-
-#ifdef DISTANCE
-	#if DISTANCE == 1
-
-#define SS_ENABLE_DISTANCE		3u
-#define SS_REGISTER_DISTANCE	8u
-
-	#endif
-#endif
 
 typedef struct
 {

@@ -5,6 +5,7 @@
  *      Author: Csabi
  */
 #include "SPI_Handler.h"
+#include <main.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -74,11 +75,12 @@ void SPI_Cycle(){
 void SPI_EnableSSPin(uint8_t Type){
 	switch (Type) {
 		case MODULE_TYPE_NRF01:
-			HAL_GPIO_WritePin(SS_REGISTER_NRF01, SS_ENABLE_NRF01, RESET);
+			HAL_GPIO_WritePin(SPI_NSS_RF_MODULE_GPIO_Port, SPI_NSS_RF_MODULE_Pin, RESET);
 			break;
-#if GYRO == 1
+
+#ifdef GYRO
 		case MODULE_TYPE_GYRO:
-			HAL_GPIO_WritePin(SS_REGISTER_GYRO, SS_ENABLE_GYRO, RESET);
+			HAL_GPIO_WritePin(SPI_NSS_GYRO_MODULE_GPIO_Port, SPI_NSS_GYRO_MODULE_Pin, RESET);
 			break;
 #endif
 
@@ -96,11 +98,11 @@ void SPI_EnableSSPin(uint8_t Type){
 void SPI_DisableSSPin(uint8_t Type){
 	switch (Type) {
 		case MODULE_TYPE_NRF01:
-			HAL_GPIO_WritePin(SS_REGISTER_NRF01, SS_ENABLE_NRF01, SET);
+			HAL_GPIO_WritePin(SPI_NSS_RF_MODULE_GPIO_Port, SPI_NSS_RF_MODULE_Pin, SET);
 			break;
 #if GYRO == 1
 		case MODULE_TYPE_GYRO:
-			HAL_GPIO_WritePin(SS_REGISTER_GYRO, SS_ENABLE_GYRO, SET);
+			HAL_GPIO_WritePin(SPI_NSS_GYRO_MODULE_GPIO_Port, SPI_NSS_GYRO_MODULE_Pin, SET);
 			break;
 #endif
 

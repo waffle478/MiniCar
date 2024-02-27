@@ -10,9 +10,6 @@
 
 #define DEFAULT_TIMEOUT 30u
 
-#define NSS_REGISTER 	GPIOA
-#define NSS_PIN	 		GPIO_PIN_4
-
 enum ResetBuffer{
 	RESET_TRANSMIT_BUFFER,
 	RESET_RECEIVE_BUFFER,
@@ -30,20 +27,20 @@ typedef struct{
 
 void RF_Setup(void);
 
-void getRegister(uint8_t regAddress);
-void getRegisterMultipleData(uint8_t regAddress, uint8_t len);
+void RF_getRegister(uint8_t regAddress);
+void RF_getRegisterMultipleData(uint8_t regAddress, uint8_t len);
 
-void setRegister(uint8_t regAddress, uint8_t data);
-void setRegisterUnsafely(uint8_t regAddress, uint8_t data);
-void setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len);
+void RF_setRegister(uint8_t regAddress, uint8_t data);
+void RF_setRegisterUnsafely(uint8_t regAddress, uint8_t data);
+void RF_setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len);
 
-void setAddressData(uint8_t regAddress, uint8_t len);
+void RF_setAddressData(uint8_t regAddress, uint8_t len);
 
-void sendCommand(uint8_t command);
+void RF_sendCommand(uint8_t command);
 
-void sendPayloadReadRequest(void);
+void RF_sendPayloadReadRequest(void);
 
-void resetMessage();
+void RF_resetMessage();
 
 extern SPI_HandleTypeDef hspi1;
 extern RF_Module RF_Data;
