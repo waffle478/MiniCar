@@ -25,6 +25,7 @@
 #include "SPI_Handler.h"
 #include "ioManager.h"
 #include "MotorController.h"
+#include "MPU_Handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -118,12 +119,12 @@ int main(void)
 
   IO_StartPWM();
 
+  MPU_Init();
   RF_Setup();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
 
   while (1)
   {
@@ -135,8 +136,7 @@ int main(void)
 	}
 	SPI_Cycle();
 	HAL_Delay(1);
-
-	HAL_UART_Transmit(&huart4, &counter, 8, 100);
+	RF_transferMessageToUart(&huart4);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

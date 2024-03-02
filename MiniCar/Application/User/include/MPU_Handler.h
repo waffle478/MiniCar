@@ -38,7 +38,7 @@ typedef struct{
 	SPI_message Message;
 }MPU_control;
 
-void MPU_Init();
+void MPU_Init(void);
 
 void MPU_getRegister(uint8_t regAddress);
 void MPU_getRegisterMultipleData(uint8_t regAddress, uint8_t len);

@@ -11,7 +11,7 @@ RF_Module RF_Data;
 
 void RF_Setup(void)
 {
-	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
+	RF_Data.Message.Module.ModuleType = MODULE_TYPE_NRF01;
 
 	RF_resetMessage();
 	RF_getRegister(CONFIG);
@@ -173,6 +173,26 @@ void RF_sendCommand(uint8_t command)
 	SPI_AddMessageToQueue(&RF_Data.Message);
 }
 
+void RF_receiveMessage(SPI_message message)
+{
+	memcpy(&RF_Data.ReceivedMessage, &message, sizeof(SPI_message));
+}
+
+void RF_transferMessageToUart(UART_HandleTypeDef *huart)
+{
+	if (RF_Data.ReceivedMessage.MessageLenght > 0 && RF_Data.ReceivedMessage.CircularDataBuffer[0] == 0x42) {
+		RF_Data.ReceivedMessage.CircularDataBuffer[RF_Data.ReceivedMessage.MessageLenght] = '\n';
+		RF_Data.ReceivedMessage.MessageLenght++;
+
+		HAL_UART_Transmit(huart, RF_Data.ReceivedMessage.CircularDataBuffer, RF_Data.ReceivedMessage.MessageLenght, DEFAULT_TIMEOUT);
+		RF_Data.ReceivedMessage.MessageLenght = 0;
+	}
+	else
+	{
+		//HAL_UART_Transmit(huart, ":(\r\n", 4, DEFAULT_TIMEOUT);
+	}
+}
+
 void RF_sendPayloadReadRequest(void)
 {
 	RF_resetMessage();
@@ -182,5 +202,7 @@ void RF_sendPayloadReadRequest(void)
 void RF_resetMessage()
 {
 	SPI_resetMessage(&RF_Data.Message);
-	RF_Data.Message.ModuleType = MODULE_TYPE_NRF01;
+	RF_Data.Message.Module.ModuleFunction = *RF_receiveMessage;
+	RF_Data.Message.Module.FunctionExecution = 1;
+	RF_Data.Message.Module.ModuleType = MODULE_TYPE_NRF01;
 }

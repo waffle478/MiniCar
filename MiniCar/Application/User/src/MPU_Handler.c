@@ -9,15 +9,22 @@
 
 MPU_control MPU_data;
 
-void MPU_Init()
+void MPU_Init(void)
 {
 	MPU_resetMessage();
 
+	/* Setup SPI communication */
 	MPU_data.UserControl.UserControlRegByte = 0;
 	MPU_data.UserControl.I2C_IF_DIS = 1;
 
-	MPU_data.Message.CircularDataBuffer[0] = READ | USER_CTRL;
+	MPU_data.Message.CircularDataBuffer[0] = WRITE | USER_CTRL;
 	MPU_data.Message.CircularDataBuffer[1] = MPU_data.UserControl.UserControlRegByte;
+	MPU_data.Message.MessageLenght = 2;
+
+	SPI_AddMessageToQueue(&MPU_data.Message);
+
+	MPU_resetMessage();
+	MPU_data.Message.CircularDataBuffer[0] = READ | GYRO_XOUT_H;
 
 }
 
@@ -114,5 +121,5 @@ void MPU_sendCommand(uint8_t command)
 void MPU_resetMessage()
 {
 	SPI_resetMessage(&MPU_data.Message);
-	MPU_data.Message.ModuleType = MODULE_TYPE_GYRO;
+	MPU_data.Message.Module.ModuleType = MODULE_TYPE_GYRO;
 }

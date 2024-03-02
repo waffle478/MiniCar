@@ -10,6 +10,8 @@
 
 #define DEFAULT_TIMEOUT 30u
 
+#include <string.h>
+
 enum ResetBuffer{
 	RESET_TRANSMIT_BUFFER,
 	RESET_RECEIVE_BUFFER,
@@ -22,7 +24,7 @@ enum ResetBuffer{
 typedef struct{
 	uint8_t 	Status;
 	SPI_message Message;
-	SPI_message	StagedMessage;
+	SPI_message	ReceivedMessage;
 }RF_Module;
 
 void RF_Setup(void);
@@ -39,6 +41,9 @@ void RF_setAddressData(uint8_t regAddress, uint8_t len);
 void RF_sendCommand(uint8_t command);
 
 void RF_sendPayloadReadRequest(void);
+void RF_receiveMessage(SPI_message message);
+
+void RF_transferMessageToUart(UART_HandleTypeDef *huart);
 
 void RF_resetMessage();
 

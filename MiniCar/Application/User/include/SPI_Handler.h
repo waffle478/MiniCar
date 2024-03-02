@@ -20,9 +20,15 @@
 
 #define GYRO		ENABLED
 
+#define MODULE_FUNCTION_POINTER(NAME) void(*NAME)(SPI_message)
+
+#define CURRENT_QUEUE_ELEMENT	Data.Queue.Queue[0]
+#define NEXT_QUEUE_ELEMENT		Data.Queue.Queue[1]
+
 #include "main.h"
 #include "stm32l4xx_hal.h"
 #include "Statuses.h"
+
 
 typedef struct
 {
@@ -32,10 +38,17 @@ typedef struct
 
 typedef struct
 {
+	uint8_t		ModuleType;
+	uint8_t		FunctionExecution;
+	MODULE_FUNCTION_POINTER(ModuleFunction);
+}ModuleData;
+
+typedef struct
+{
 	uint8_t 		CircularDataBuffer[32];
 	uint8_t			MessageLenght;
 	RelatedMessage	RelatedTo;
-	uint8_t			ModuleType;
+	ModuleData		Module;
 }SPI_message;
 
 typedef struct{

@@ -14,11 +14,9 @@ SPI_Data Data;
 uint8_t SPI_AddMessageToQueue(SPI_message *message){
 	uint8_t ret = 0;
 	if (QUEUE_MAX_MESSAGES > Data.Queue.QueueLength) {
-		//Data.Queue.Queue[Data.Queue.QueueLength] = &messageAddress;
 		memcpy(Data.Queue.Queue[Data.Queue.QueueLength].CircularDataBuffer, message->CircularDataBuffer, 32);
-		Data.Queue.Queue[Data.Queue.QueueLength].MessageLenght = message->MessageLenght;
-		Data.Queue.Queue[Data.Queue.QueueLength].ModuleType = message->ModuleType;
-		Data.Queue.Queue[Data.Queue.QueueLength].RelatedTo = message->RelatedTo;
+
+		memcpy(&Data.Queue.Queue[Data.Queue.QueueLength], message, sizeof(SPI_message));
 		Data.Queue.QueueLength++;
 		ret = 1; //Message added to queue
 	}
@@ -49,17 +47,22 @@ void SPI_Cycle(){
 	switch (Data.Queue.Status) {
 		case STATUS_WAITING:
 			/* Enable correct module to communicate with and send message */
-			if (Data.Queue.QueueLength != 0 && Data.Queue.Queue[0].MessageLenght != 0) {
-				SPI_EnableSSPin(Data.Queue.Queue[0].ModuleType);
-				HAL_SPI_Receive_IT(Data.HalSpiPort, Data.Queue.Queue[0].CircularDataBuffer, Data.Queue.Queue[0].MessageLenght);
+			if (Data.Queue.QueueLength != 0 && CURRENT_QUEUE_ELEMENT.MessageLenght != 0) {
+				SPI_EnableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
+				HAL_SPI_Receive_IT(Data.HalSpiPort, CURRENT_QUEUE_ELEMENT.CircularDataBuffer, CURRENT_QUEUE_ELEMENT.MessageLenght);
 				Data.Queue.Status = STATUS_TRANCIEVING;
 			}
 			break;
 		case STATUS_RECEIVED_MESSAGE:
 			/* If the next message is related to the currently set message then transfer the needed data */
-			if (TRUE == Data.Queue.Queue[0].RelatedTo.EarlierMessage) {
+			if (TRUE == CURRENT_QUEUE_ELEMENT.RelatedTo.EarlierMessage) {
 				/* 					The related data and the selected byte				 	OR						The earlier sent data and its related byte				*/
-				Data.Queue.Queue[1].CircularDataBuffer[Data.Queue.Queue[0].RelatedTo.Byte] |= Data.Queue.Queue[0].CircularDataBuffer[Data.Queue.Queue[0].RelatedTo.Byte];
+				NEXT_QUEUE_ELEMENT.CircularDataBuffer[CURRENT_QUEUE_ELEMENT.RelatedTo.Byte] |= CURRENT_QUEUE_ELEMENT.CircularDataBuffer[CURRENT_QUEUE_ELEMENT.RelatedTo.Byte];
+			}
+
+			/* Call queue element's function and advance queue */
+			if (TRUE == CURRENT_QUEUE_ELEMENT.Module.FunctionExecution) {
+				CURRENT_QUEUE_ELEMENT.Module.ModuleFunction(CURRENT_QUEUE_ELEMENT);
 			}
 
 			SPI_AdvanceQueue();
@@ -124,7 +127,8 @@ void SPI_resetMessage(SPI_message *message)
 		message->CircularDataBuffer[i] = 0u;
 	}
 	message->MessageLenght = 0;
-	message->ModuleType = 0;
+	message->Module.ModuleType = 0;
+	message->Module.FunctionExecution = 0;
 	message->RelatedTo.EarlierMessage = 0;
 	message->RelatedTo.Byte = 0;
 }
@@ -137,7 +141,7 @@ void SPI_resetMessage(SPI_message *message)
 void HAL_SPI_RxCpltCallback (SPI_HandleTypeDef * hspi)
 {
 	/* Disable the enabled pin and move the queue */
-	SPI_DisableSSPin(Data.Queue.Queue[0].ModuleType);
+	SPI_DisableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
 	Data.Queue.Status = STATUS_RECEIVED_MESSAGE;
 }
 
