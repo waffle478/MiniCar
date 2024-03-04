@@ -23,9 +23,6 @@ void MPU_Init(void)
 
 	SPI_AddMessageToQueue(&MPU_data.Message);
 
-	MPU_resetMessage();
-	MPU_data.Message.CircularDataBuffer[0] = READ | GYRO_XOUT_H;
-
 }
 
 /* --------------------- [READ REGISTERS] --------------------- */
@@ -110,6 +107,22 @@ void MPU_setAddressData(uint8_t regAddress, uint8_t len)
 	SPI_AddMessageToQueue(&MPU_data.Message);
 }
 
+void MPU_receiveMessage(SPI_message message)
+{
+	memcpy(&MPU_data.ReceivedMessage, &message, sizeof(SPI_message));
+}
+
+void MPU_transferMessageToUart(UART_HandleTypeDef *huart)
+{
+	if (MPU_data.ReceivedMessage.MessageLenght > 0) {
+		MPU_data.ReceivedMessage.CircularDataBuffer[MPU_data.ReceivedMessage.MessageLenght] = '\n';
+		MPU_data.ReceivedMessage.MessageLenght++;
+
+		HAL_UART_Transmit(huart, MPU_data.ReceivedMessage.CircularDataBuffer, MPU_data.ReceivedMessage.MessageLenght, DEFAULT_TIMEOUT);
+		MPU_data.ReceivedMessage.MessageLenght = 0;
+	}
+}
+
 void MPU_sendCommand(uint8_t command)
 {
 	MPU_data.Message.CircularDataBuffer[0] = command;
@@ -118,8 +131,18 @@ void MPU_sendCommand(uint8_t command)
 	SPI_AddMessageToQueue(&MPU_data.Message);
 }
 
+void MPU_sendPayloadReadRequest()
+{
+	MPU_resetMessage();
+	MPU_data.Message.Module.FunctionExecution = 1;
+	MPU_data.Message.CircularDataBuffer[0] = READ | GYRO_XOUT_H;
+	MPU_data.Message.MessageLenght = 2;
+	SPI_AddMessageToQueue(&MPU_data.Message);
+}
+
 void MPU_resetMessage()
 {
 	SPI_resetMessage(&MPU_data.Message);
+	MPU_data.Message.Module.ModuleFunction = *MPU_receiveMessage;
 	MPU_data.Message.Module.ModuleType = MODULE_TYPE_GYRO;
 }

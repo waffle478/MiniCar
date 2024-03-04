@@ -114,13 +114,14 @@ int main(void)
   MX_SPI1_Init();
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
+  MPU_Init();
 
   MC_Init(&htim1, &htim3);
 
   IO_StartPWM();
 
-  MPU_Init();
-  RF_Setup();
+
+  //RF_Setup();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,12 +132,14 @@ int main(void)
 
 	counter--;
 	if (counter == 0) {
-		RF_sendPayloadReadRequest();
+		MPU_sendPayloadReadRequest();
 		counter = 3;
 	}
+
 	SPI_Cycle();
-	HAL_Delay(1);
-	RF_transferMessageToUart(&huart4);
+	//HAL_Delay(1);
+	//RF_transferMessageToUart(&huart4);
+	MPU_transferMessageToUart(&huart4);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

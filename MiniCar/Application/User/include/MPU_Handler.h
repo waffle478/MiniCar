@@ -36,6 +36,7 @@ typedef struct{
 	uint8_t Temperature;
 	UserCtrlReg UserControl;
 	SPI_message Message;
+	SPI_message	ReceivedMessage;
 }MPU_control;
 
 void MPU_Init(void);
@@ -50,6 +51,9 @@ void MPU_setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
 void MPU_setAddressData(uint8_t regAddress, uint8_t len);
 
 void MPU_sendCommand(uint8_t command);
+
+void MPU_receiveMessage(SPI_message message);
+void MPU_transferMessageToUart(UART_HandleTypeDef *huart);
 
 void MPU_sendPayloadReadRequest(void);
 
