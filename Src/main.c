@@ -132,7 +132,7 @@ int main(void)
 
 	counter--;
 	if (counter == 0) {
-		MPU_sendPayloadReadRequest();
+		MPU_readSensors();
 		counter = 3;
 	}
 

@@ -17,28 +17,14 @@ void MPU_Init(void)
 	MPU_data.UserControl.UserControlRegByte = 0;
 	MPU_data.UserControl.I2C_IF_DIS = 1;
 
-	MPU_data.Message.CircularDataBuffer[0] = WRITE | USER_CTRL;
-	MPU_data.Message.CircularDataBuffer[1] = MPU_data.UserControl.UserControlRegByte;
-	MPU_data.Message.MessageLenght = 2;
+	MPU_setRegisterUnsafely(USER_CTRL, MPU_data.UserControl.UserControlRegByte);
 
-	SPI_AddMessageToQueue(&MPU_data.Message);
-
+	MPU_resetMessage();
 }
 
 /* --------------------- [READ REGISTERS] --------------------- */
 
 void MPU_getRegister(uint8_t regAddress)
-{
-	/* Set command to read the registers */
-	regAddress |= READ;
-
-	MPU_data.Message.CircularDataBuffer[0] = regAddress;
-	MPU_data.Message.MessageLenght = 2;
-
-	SPI_AddMessageToQueue(&MPU_data.Message);
-}
-
-void MPU_getRegisterMultipleData(uint8_t regAddress, uint8_t len)
 {
 	/* Set command to read the registers */
 	regAddress |= READ;
@@ -78,38 +64,12 @@ void MPU_setRegisterUnsafely(uint8_t regAddress, uint8_t data)
 	SPI_AddMessageToQueue(&MPU_data.Message);
 }
 
-void MPU_setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len)
-{
-	/* Read the data from the register so we do not write data we don't want to write */
-	MPU_getRegister(regAddress);
-
-	/* Assemble the modified data */
-	for (int i = 0; i < len; ++i)
-	{
-		MPU_data.Message.CircularDataBuffer[i + 1] = MPU_data.Message.CircularDataBuffer[i];
-		MPU_data.Message.CircularDataBuffer[i + 1] |= data[i];
-	}
-	/* First byte has to be set last to be set */
-	MPU_data.Message.CircularDataBuffer[0] = regAddress | WRITE;
-
-	SPI_AddMessageToQueue(&MPU_data.Message);
-}
-
-void MPU_setAddressData(uint8_t regAddress, uint8_t len)
-{
-	/* Read the data from the register so we do not write data we don't want to write */
-	//getRegister(regAddress);
-
-	/* Assemble the modified data */
-	MPU_data.Message.CircularDataBuffer[0] = regAddress | WRITE;
-
-	MPU_data.Message.MessageLenght = len;
-	SPI_AddMessageToQueue(&MPU_data.Message);
-}
-
 void MPU_receiveMessage(SPI_message message)
 {
+	/* TODO: test this function */
 	memcpy(&MPU_data.ReceivedMessage, &message, sizeof(SPI_message));
+	/* Copy the incoming data to the sensor memory location. */
+	memcpy(MPU_data.Sensors.Memory, &message.CircularDataBuffer[1], message.MessageLenght);
 }
 
 void MPU_transferMessageToUart(UART_HandleTypeDef *huart)
@@ -131,12 +91,19 @@ void MPU_sendCommand(uint8_t command)
 	SPI_AddMessageToQueue(&MPU_data.Message);
 }
 
-void MPU_sendPayloadReadRequest()
+void MPU_readSensors()
 {
 	MPU_resetMessage();
+
+	/* Send commands to get accel, temp, and gyroscope data */
+	uint8_t command = ACCEL_XOUT_H;
+	for (; command < GYRO_ZOUT_L; command++) {
+		// Maybe use sendCommand function instead? Function needs change.
+		MPU_data.Message.CircularDataBuffer[command - ACCEL_XOUT_H] = 0;
+	}
 	MPU_data.Message.Module.FunctionExecution = 1;
-	MPU_data.Message.CircularDataBuffer[0] = READ | GYRO_XOUT_H;
-	MPU_data.Message.MessageLenght = 2;
+	/* After the FOR cycle this will be the length of the message. */
+	MPU_data.Message.MessageLenght = command - ACCEL_XOUT_H + 1; // We need plus 1 length to get the last data.
 	SPI_AddMessageToQueue(&MPU_data.Message);
 }
 

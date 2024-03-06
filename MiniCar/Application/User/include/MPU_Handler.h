@@ -31,9 +31,18 @@ typedef union{
 }UserCtrlReg;
 
 typedef struct{
-	AxisData GyroSensor;
 	AxisData AccelerometerSensor;
 	uint8_t Temperature;
+	AxisData GyroSensor;
+}SensorData;
+
+typedef union{
+	SensorData Data;
+	uint8_t Memory[13];
+}SensorMemory;
+
+typedef struct{
+	SensorMemory Sensors;
 	UserCtrlReg UserControl;
 	SPI_message Message;
 	SPI_message	ReceivedMessage;
@@ -42,20 +51,16 @@ typedef struct{
 void MPU_Init(void);
 
 void MPU_getRegister(uint8_t regAddress);
-void MPU_getRegisterMultipleData(uint8_t regAddress, uint8_t len);
 
 void MPU_setRegister(uint8_t regAddress, uint8_t data);
 void MPU_setRegisterUnsafely(uint8_t regAddress, uint8_t data);
-void MPU_setRegisterMultipleData(uint8_t regAddress, uint8_t* data, uint8_t len);
-
-void MPU_setAddressData(uint8_t regAddress, uint8_t len);
 
 void MPU_sendCommand(uint8_t command);
 
 void MPU_receiveMessage(SPI_message message);
 void MPU_transferMessageToUart(UART_HandleTypeDef *huart);
 
-void MPU_sendPayloadReadRequest(void);
+void MPU_readSensors(void);
 
 void MPU_resetMessage();
 
