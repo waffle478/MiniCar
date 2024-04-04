@@ -48,9 +48,11 @@ void SPI_Cycle(){
 		case STATUS_WAITING:
 			/* Enable correct module to communicate with and send message */
 			if (Data.Queue.QueueLength != 0 && CURRENT_QUEUE_ELEMENT.MessageLenght != 0) {
-				SPI_EnableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
-				HAL_SPI_Receive_IT(Data.HalSpiPort, CURRENT_QUEUE_ELEMENT.CircularDataBuffer, CURRENT_QUEUE_ELEMENT.MessageLenght);
+				/* Must set status before the interrupt */
 				Data.Queue.Status = STATUS_TRANCIEVING;
+				SPI_EnableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
+				/* Send data with interrupt */
+				HAL_SPI_Receive_IT(Data.HalSpiPort, CURRENT_QUEUE_ELEMENT.CircularDataBuffer, CURRENT_QUEUE_ELEMENT.MessageLenght);
 			}
 			break;
 		case STATUS_RECEIVED_MESSAGE:
@@ -103,7 +105,7 @@ void SPI_DisableSSPin(uint8_t Type){
 		case MODULE_TYPE_NRF01:
 			HAL_GPIO_WritePin(SPI_NSS_RF_MODULE_GPIO_Port, SPI_NSS_RF_MODULE_Pin, SET);
 			break;
-#if GYRO == 1
+#ifdef GYRO
 		case MODULE_TYPE_GYRO:
 			HAL_GPIO_WritePin(SPI_NSS_GYRO_MODULE_GPIO_Port, SPI_NSS_GYRO_MODULE_Pin, SET);
 			break;
@@ -123,31 +125,38 @@ void SPI_DisableSSPin(uint8_t Type){
 void SPI_resetMessage(SPI_message *message)
 {
 	/* TODO: Use other way to clear an array. */
+	//memset(message, 0, sizeof(SPI_message));
 	for (int i = 0; i < 32; ++i) {
-		message->CircularDataBuffer[i] = 0u;
+		message->CircularDataBuffer[i] = 0xFF;
 	}
 	message->MessageLenght = 0;
 	message->Module.ModuleType = 0;
 	message->Module.FunctionExecution = 0;
+	message->Module.FunctionType = 0;
 	message->RelatedTo.EarlierMessage = 0;
 	message->RelatedTo.Byte = 0;
 }
 
-
+void SPI_resetCircularDataBuffer(uint8_t *dataBuffer)
+{
+	memset(dataBuffer, 0, 32);
+}
 
 
 
 
 void HAL_SPI_RxCpltCallback (SPI_HandleTypeDef * hspi)
 {
-	/* Disable the enabled pin and move the queue */
 	SPI_DisableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
 	Data.Queue.Status = STATUS_RECEIVED_MESSAGE;
 }
 
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
+{
+
+}
+
 void HAL_SPI_TxCpltCallback (SPI_HandleTypeDef * hspi)
 {
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
-	//HAL_SPI_Receive(&hspi1, &RF_Data.Status, 1, DEFAULT_TIMEOUT);
-	//HAL_GPIO_WritePin(NSS_REGISTER, NSS_PIN, SET);
+
 }

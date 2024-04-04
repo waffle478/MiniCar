@@ -43,6 +43,7 @@ typedef struct
 {
 	uint8_t		ModuleType;
 	uint8_t		FunctionExecution;
+	uint8_t		FunctionType;
 	MODULE_FUNCTION_PROTOTYPE(ModuleFunction);
 }ModuleData;
 
@@ -73,5 +74,6 @@ void SPI_Cycle();
 void SPI_EnableSSPin(uint8_t Type);
 void SPI_DisableSSPin(uint8_t Type);
 void SPI_resetMessage(SPI_message *message);
+void SPI_resetCircularDataBuffer(uint8_t *dataBuffer);
 
 #endif /* APPLICATION_USER_INCLUDE_SPI_HANDLER_H_ */

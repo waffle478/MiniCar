@@ -72,7 +72,7 @@ static void MX_UART4_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t counter = 160;
+uint16_t counter = 160;
 uint8_t transmit_data = 0;
 uint8_t receiveLen = 0;
 volatile uint8_t receive_IT_flag = 0;
@@ -133,13 +133,11 @@ int main(void)
 	counter--;
 	if (counter == 0) {
 		MPU_readSensors();
-		counter = 3;
+		counter = 1000;
 	}
 
 	SPI_Cycle();
 	//HAL_Delay(1);
-	//RF_transferMessageToUart(&huart4);
-	MPU_transferMessageToUart(&huart4);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

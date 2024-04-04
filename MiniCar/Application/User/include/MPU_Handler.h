@@ -12,10 +12,27 @@
 #include "MPU9250_MemoryMap.h"
 #include "SPI_Handler.h"
 
+#define ReceivedMessage(INDEX) MPU_data.ReceivedMessage.CircularDataBuffer[INDEX]
+
+#define MPU_FUNCTION_ACCELEROMETER_FS	1u
+#define MPU_FUNCTION_GYROSCOPE_FS		2u
+#define MPU_FUNCTION_ALL_DATA			3u
+
+#define MPU_FS_ACCEL_2G		0u
+#define MPU_FS_ACCEL_4G		1u
+#define MPU_FS_ACCEL_8G		2u
+#define MPU_FS_ACCEL_16G	3u
+
+#define MPU_FS_GYRO_250		0u
+#define MPU_FS_GYRO_500     1u
+#define MPU_FS_GYRO_1000    2u
+#define MPU_FS_GYRO_2000    3u
+
 typedef struct{
-	uint16_t X_axis;
-	uint16_t Y_axis;
-	uint16_t Z_axis;
+	int16_t X_axis;
+	int16_t Y_axis;
+	int16_t Z_axis;
+	int16_t FullScaleSelected;
 }AxisData;
 
 typedef union{
@@ -32,6 +49,7 @@ typedef union{
 
 typedef struct{
 	AxisData AccelerometerSensor;
+<<<<<<< Upstream, based on branch 'master' of https://github.com/waffle478/MiniCar.git
 	uint8_t Temperature;
 	AxisData GyroSensor;
 }SensorData;
@@ -43,6 +61,9 @@ typedef union{
 
 typedef struct{
 	SensorMemory Sensors;
+=======
+	uint16_t Temperature;
+>>>>>>> 61ce5db Now the MPU can be read with (almost) all sensor data.
 	UserCtrlReg UserControl;
 	SPI_message Message;
 	SPI_message	ReceivedMessage;
@@ -58,6 +79,9 @@ void MPU_setRegisterUnsafely(uint8_t regAddress, uint8_t data);
 void MPU_sendCommand(uint8_t command);
 
 void MPU_receiveMessage(SPI_message message);
+void MPU_processFullScale_Accelerometer(uint8_t data);
+void MPU_processFullScale_Gyroscope(uint8_t data);
+
 void MPU_transferMessageToUart(UART_HandleTypeDef *huart);
 
 void MPU_readSensors(void);
