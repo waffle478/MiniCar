@@ -20,6 +20,7 @@ void MPU_Init(void)
 	MPU_setRegisterUnsafely(USER_CTRL, MPU_data.UserControl.UserControlRegByte);
 
 	/* TODO: Add a function so the sensor could be calibrated */
+		/* Calibration means the offsets are set so the read values are zero */
 
 	/* Set full scale values */
 	MPU_resetMessage(&MPU_data.Message);

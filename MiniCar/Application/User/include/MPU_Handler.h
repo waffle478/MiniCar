@@ -33,7 +33,7 @@ typedef struct{
 	int16_t Y_axis;
 	int16_t Z_axis;
 	int16_t FullScaleSelected;
-}AxisData;
+}AxisRaw;
 
 typedef union{
 	uint8_t SIG_COND_RST : 1;
@@ -48,8 +48,8 @@ typedef union{
 }UserCtrlReg;
 
 typedef struct{
-	AxisData AccelerometerSensor;
-	AxisData GyroSensor;
+	AxisRaw AccelerometerSensor;
+	AxisRaw GyroSensor;
 	uint16_t Temperature;
 	UserCtrlReg UserControl;
 	SPI_message Message;
