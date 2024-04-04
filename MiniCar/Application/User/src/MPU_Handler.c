@@ -106,6 +106,8 @@ void MPU_receiveMessage(SPI_message message)
 			MPU_data.GyroSensor.Y_axis = (ReceivedMessage(9) << 8) | ReceivedMessage(10);
 			MPU_data.GyroSensor.Z_axis = (ReceivedMessage(11) << 8) | ReceivedMessage(12);
 			MPU_data.GyroSensor.X_axis = (ReceivedMessage(13) << 8) | ReceivedMessage(14);
+
+			MP_processAccelerometer();
 			break;
 		default:
 			break;
@@ -196,3 +198,16 @@ void MPU_resetMessage()
 	MPU_data.Message.Module.ModuleFunction = *MPU_receiveMessage;
 	MPU_data.Message.Module.ModuleType = MODULE_TYPE_GYRO;
 }
+
+
+
+AxisRaw MPU_getAccelerometer(void)
+{
+	return MPU_data.AccelerometerSensor;
+}
+
+AxisRaw MPU_getGyroscope(void)
+{
+	return MPU_data.GyroSensor;
+}
+

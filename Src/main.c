@@ -26,6 +26,7 @@
 #include "ioManager.h"
 #include "MotorController.h"
 #include "MPU_Handler.h"
+#include "MotionProcessing.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

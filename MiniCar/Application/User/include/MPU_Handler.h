@@ -64,6 +64,7 @@ void MPU_setRegister(uint8_t regAddress, uint8_t data);
 void MPU_setRegisterUnsafely(uint8_t regAddress, uint8_t data);
 
 void MPU_sendCommand(uint8_t command);
+void MPU_sendPayloadReadRequest(void);
 
 void MPU_receiveMessage(SPI_message message);
 void MPU_processFullScale_Accelerometer(uint8_t data);
@@ -74,5 +75,8 @@ void MPU_transferMessageToUart(UART_HandleTypeDef *huart);
 void MPU_readSensors(void);
 
 void MPU_resetMessage();
+
+AxisRaw MPU_getAccelerometer(void);
+AxisRaw MPU_getGyroscope(void);
 
 #endif /* APPLICATION_USER_INCLUDE_MPU_HANDLER_H_ */
