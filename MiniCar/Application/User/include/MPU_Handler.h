@@ -49,21 +49,8 @@ typedef union{
 
 typedef struct{
 	AxisData AccelerometerSensor;
-<<<<<<< Upstream, based on branch 'master' of https://github.com/waffle478/MiniCar.git
-	uint8_t Temperature;
 	AxisData GyroSensor;
-}SensorData;
-
-typedef union{
-	SensorData Data;
-	uint8_t Memory[13];
-}SensorMemory;
-
-typedef struct{
-	SensorMemory Sensors;
-=======
 	uint16_t Temperature;
->>>>>>> 61ce5db Now the MPU can be read with (almost) all sensor data.
 	UserCtrlReg UserControl;
 	SPI_message Message;
 	SPI_message	ReceivedMessage;

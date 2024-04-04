@@ -18,7 +18,6 @@ void MPU_Init(void)
 	MPU_data.UserControl.I2C_IF_DIS = 1;
 
 	MPU_setRegisterUnsafely(USER_CTRL, MPU_data.UserControl.UserControlRegByte);
-	MPU_setRegisterUnsafely(USER_CTRL, MPU_data.UserControl.UserControlRegByte);
 
 	/* TODO: Add a function so the sensor could be calibrated */
 
@@ -86,7 +85,7 @@ void MPU_setRegisterUnsafely(uint8_t regAddress, uint8_t data)
 void MPU_receiveMessage(SPI_message message)
 {
 	/* Copy the incoming data to the sensor memory location. */
-	memcpy(MPU_data.Sensors.Memory, &message.CircularDataBuffer[1], message.MessageLenght);
+	memcpy(&MPU_data.ReceivedMessage, &message, sizeof(SPI_message));
 
 	switch (MPU_data.ReceivedMessage.Module.FunctionType) {
 		case MPU_FUNCTION_ACCELEROMETER_FS:

@@ -132,7 +132,7 @@ int main(void)
 
 	counter--;
 	if (counter == 0) {
-		MPU_readSensors();
+		MPU_sendPayloadReadRequest();
 		counter = 1000;
 	}
 
