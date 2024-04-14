@@ -6,6 +6,7 @@
  */
 
 #include "MotionProcessing.h"
+#include "math.h"
 
 Motion CurrentMotion;
 
@@ -23,4 +24,6 @@ void MP_processGyroscope(void)
 	CurrentMotion.Linear.Acceleration_highDef.X = CALCULATE_MOTION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.X_axis);
 	CurrentMotion.Linear.Acceleration_highDef.Y = CALCULATE_MOTION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.Y_axis);
 	CurrentMotion.Linear.Acceleration_highDef.Z = CALCULATE_MOTION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.Z_axis);
+
+	/* 4 lépéses rungekutta? */
 }
