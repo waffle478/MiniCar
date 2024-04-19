@@ -100,14 +100,14 @@ void MPU_receiveMessage(SPI_message message)
 			MPU_data.AccelerometerSensor.X_axis = (ReceivedMessage(1) << 8) | ReceivedMessage(2);
 			MPU_data.AccelerometerSensor.Y_axis = (ReceivedMessage(3) << 8) | ReceivedMessage(4);
 			MPU_data.AccelerometerSensor.Z_axis = (ReceivedMessage(5) << 8) | ReceivedMessage(6);
+			MPU_data.AccelerometerSensor.DataReady = 1;
 
 			MPU_data.Temperature = (ReceivedMessage(7) << 8) | ReceivedMessage(8);
 
 			MPU_data.GyroSensor.Y_axis = (ReceivedMessage(9) << 8) | ReceivedMessage(10);
 			MPU_data.GyroSensor.Z_axis = (ReceivedMessage(11) << 8) | ReceivedMessage(12);
 			MPU_data.GyroSensor.X_axis = (ReceivedMessage(13) << 8) | ReceivedMessage(14);
-
-			MP_processAccelerometer();
+			MPU_data.GyroSensor.DataReady = 1;
 			break;
 		default:
 			break;
@@ -209,5 +209,18 @@ AxisRaw MPU_getAccelerometer(void)
 AxisRaw MPU_getGyroscope(void)
 {
 	return MPU_data.GyroSensor;
+}
+
+uint8_t MPU_getReadyAccelerometer(void)
+{
+	uint8_t retVal = MPU_data.AccelerometerSensor.DataReady;
+	MPU_data.AccelerometerSensor.DataReady = 0;
+	return retVal;
+}
+uint8_t MPU_getReadyGyroscope(void)
+{
+	uint8_t retVal = MPU_data.GyroSensor.DataReady;
+	MPU_data.GyroSensor.DataReady = 0;
+	return retVal;
 }
 

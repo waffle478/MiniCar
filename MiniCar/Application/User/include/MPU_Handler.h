@@ -33,6 +33,7 @@ typedef struct{
 	int16_t Y_axis;
 	int16_t Z_axis;
 	int16_t FullScaleSelected;
+	uint8_t DataReady;
 }AxisRaw;
 
 typedef union{
@@ -78,5 +79,8 @@ void MPU_resetMessage();
 
 AxisRaw MPU_getAccelerometer(void);
 AxisRaw MPU_getGyroscope(void);
+
+uint8_t MPU_getReadyAccelerometer(void);
+uint8_t MPU_getReadyGyroscope(void);
 
 #endif /* APPLICATION_USER_INCLUDE_MPU_HANDLER_H_ */
