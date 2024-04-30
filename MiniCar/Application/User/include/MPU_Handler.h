@@ -61,7 +61,7 @@ void MPU_Init(void);
 
 void MPU_getRegister(uint8_t regAddress);
 
-void MPU_setRegister(uint8_t regAddress, uint8_t data);
+void MPU_setRegister(uint8_t regAddress, uint8_t data, uint8_t mask);
 void MPU_setRegisterUnsafely(uint8_t regAddress, uint8_t data);
 
 void MPU_sendCommand(uint8_t command);

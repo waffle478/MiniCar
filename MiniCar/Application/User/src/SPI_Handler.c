@@ -58,6 +58,10 @@ void SPI_Cycle(){
 		case STATUS_RECEIVED_MESSAGE:
 			/* If the next message is related to the currently set message then transfer the needed data */
 			if (TRUE == CURRENT_QUEUE_ELEMENT.RelatedTo.EarlierMessage) {
+				/* If a mask is set for the currently received data, then apply the mask otherwise don't mess up the data */
+				if (NEXT_QUEUE_ELEMENT.RelatedTo.Mask != 0) {
+					CURRENT_QUEUE_ELEMENT.CircularDataBuffer[CURRENT_QUEUE_ELEMENT.RelatedTo.Byte] &= NEXT_QUEUE_ELEMENT.RelatedTo.Mask;
+				}
 				/* 					The related data and the selected byte				 	OR						The earlier sent data and its related byte				*/
 				NEXT_QUEUE_ELEMENT.CircularDataBuffer[CURRENT_QUEUE_ELEMENT.RelatedTo.Byte] |= CURRENT_QUEUE_ELEMENT.CircularDataBuffer[CURRENT_QUEUE_ELEMENT.RelatedTo.Byte];
 			}

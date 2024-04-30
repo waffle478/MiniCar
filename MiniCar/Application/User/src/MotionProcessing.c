@@ -10,6 +10,8 @@
 
 Motion CurrentMotion;
 
+float difference = -3.7; //Fix value of fuck you
+
 void MP_MotionProcessing(void)
 {
 	if (MPU_getReadyGyroscope()) {
@@ -18,7 +20,7 @@ void MP_MotionProcessing(void)
 	}
 	if (MPU_getReadyAccelerometer()) {
 		MP_processAccelerometer();
-		MP_calculateSpeed(&CurrentMotion.Linear);
+		//MP_calculateSpeed(&CurrentMotion.Linear);
 	}
 
 }
@@ -37,19 +39,22 @@ void MP_processGyroscope(void)
 {
 	AxisRaw rawGyroscopeData = MPU_getGyroscope();
 	/* Calculate angular acceleration */
-	CurrentMotion.Agnular.Acceleration_highDef.X = CALCULATE_ROTATION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.X_axis);
-	CurrentMotion.Agnular.Acceleration_highDef.Y = CALCULATE_ROTATION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.Y_axis);
-	CurrentMotion.Agnular.Acceleration_highDef.Y += 4;  // correction
-	CurrentMotion.Agnular.Acceleration_highDef.Z = CALCULATE_ROTATION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.Z_axis);
+	CurrentMotion.Agnular.Acceleration_highDef.X = (CALCULATE_ROTATION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.X_axis));
+	CurrentMotion.Agnular.Acceleration_highDef.Y = (CALCULATE_ROTATION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.Y_axis));
+	//CurrentMotion.Agnular.Acceleration_highDef.Y += 4;  // correction
+	CurrentMotion.Agnular.Acceleration_highDef.Y -= difference;
+	/*difference += CurrentMotion.Agnular.Acceleration_highDef.Y;
+	difference /= 2;*/
+	CurrentMotion.Agnular.Acceleration_highDef.Z = (CALCULATE_ROTATION(rawGyroscopeData.FullScaleSelected, rawGyroscopeData.Z_axis));
 
 	/* 4 lépéses rungekutta? */
 }
 
 void MP_calculateSpeed(Movement *accelerationMovement)
 {
-	(*accelerationMovement).Speed.X += (*accelerationMovement).Acceleration_highDef.X;
-	(*accelerationMovement).Speed.Y += (*accelerationMovement).Acceleration_highDef.Y;
-	(*accelerationMovement).Speed.Z += (*accelerationMovement).Acceleration_highDef.Z;
+	(*accelerationMovement).Speed.X += (*accelerationMovement).Acceleration_highDef.X/360;
+	(*accelerationMovement).Speed.Y += (*accelerationMovement).Acceleration_highDef.Y/360;
+	(*accelerationMovement).Speed.Z += (*accelerationMovement).Acceleration_highDef.Z/360;
 	//(*accelerationMovement).AccelerationCount++;
 
 	/*if ((*accelerationMovement).AccelerationCount >= INTEGRATION_DELTA_TIME)

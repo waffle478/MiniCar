@@ -37,6 +37,7 @@ typedef struct
 {
 	uint8_t 	EarlierMessage;
 	uint8_t		Byte;
+	uint8_t 	Mask;
 }RelatedMessage;
 
 typedef struct

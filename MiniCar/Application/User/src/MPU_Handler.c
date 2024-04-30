@@ -26,7 +26,9 @@ void MPU_Init(void)
 	MPU_resetMessage(&MPU_data.Message);
 	MPU_setRegisterUnsafely(ACCEL_CONFIG, MPU_FS_ACCEL_4G<<3);
 	MPU_resetMessage(&MPU_data.Message);
-	MPU_setRegisterUnsafely(GYRO_CONFIG, MPU_FS_GYRO_1000<<3);
+	MPU_setRegister(MPU_CONFIG, 1, 0xF8);
+	MPU_resetMessage(&MPU_data.Message);
+	MPU_setRegisterUnsafely(GYRO_CONFIG, MPU_FS_GYRO_1000<<3 | 3);
 
 	MPU_resetMessage();
 	/* Read back full scale values and process them */
@@ -56,7 +58,7 @@ void MPU_getRegister(uint8_t regAddress)
 
 /* --------------------- [SET REGISTERS] --------------------- */
 
-void MPU_setRegister(uint8_t regAddress, uint8_t data)
+void MPU_setRegister(uint8_t regAddress, uint8_t data, uint8_t mask)
 {
 	/* Read the data from the register so we do not write data we don't want to write */
 	MPU_getRegister(regAddress);
@@ -65,6 +67,7 @@ void MPU_setRegister(uint8_t regAddress, uint8_t data)
 	MPU_data.Message.RelatedTo.EarlierMessage = TRUE;
 	MPU_data.Message.RelatedTo.Byte = 1;
 
+	/* TODO: add a mask to the relatedTo struct */
 	/* Assemble the modified data. */
 	MPU_data.Message.CircularDataBuffer[1] = data;
 	MPU_data.Message.CircularDataBuffer[0] = regAddress | WRITE;
