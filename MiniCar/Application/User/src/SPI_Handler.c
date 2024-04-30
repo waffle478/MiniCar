@@ -88,9 +88,11 @@ void SPI_EnableSSPin(uint8_t Type){
 			break;
 
 #ifdef GYRO
+#if GYRO == ENABLED
 		case MODULE_TYPE_GYRO:
 			HAL_GPIO_WritePin(SPI_NSS_GYRO_MODULE_GPIO_Port, SPI_NSS_GYRO_MODULE_Pin, RESET);
 			break;
+#endif
 #endif
 
 #if DISTANCE == 1
