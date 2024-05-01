@@ -18,35 +18,33 @@ void RF_Setup(void)
 
 	RF_sendCommand(FLUSH_RX);
 
+	/* Stop the RF MCU */
 	RF_setRegisterUnsafely(CONFIG, 0x00);
+	/* Clear status register */
 	RF_setRegisterUnsafely(STATUS, 0x70);
 
 	RF_Data.Status = 0;
 	RF_resetMessage();
-	RF_setRegisterUnsafely(EN_RXADDR, 0x02);
+	/* Enable receive data pipe 1 */
+	RF_setRegisterUnsafely(EN_RXADDR, 0x02); // should set pipe 0 for transmit?
 
-
-	RF_setRegister(RX_PW_P0, 0x3f);
-
+	/* Enable AutoAcknowledge for all pipes (for some reason)*/
 	RF_setRegister(EN_AA, 0x3f);
 
-	RF_setRegisterUnsafely(RF_SETUP, 0x06);
+	/* Set The output power to 0dB and data transmit speed to 2Mbps */
+	RF_setRegisterUnsafely(RF_SETUP, 0x0E);
+	/* Setting channel for communication */
 	RF_setRegister(RF_CH, 0x4c);
 
+	/* Address width to 5 bytes */
 	RF_setRegisterUnsafely(SETUP_AW, 0x03);
+	/* Automatic retransmission - 1250 us max wait and max 15 retransmittion */
 	RF_setRegisterUnsafely(SETUP_RETR, 0x4f);
+
+	/* Set number of bytes to receive */
 	RF_setRegisterUnsafely(RX_PW_P0, 0x00);
-	RF_setRegisterUnsafely(RX_PW_P1, 0x01);
+	RF_setRegisterUnsafely(RX_PW_P1, 0x05);
 
-	RF_resetMessage();
-
-	RF_Data.Message.CircularDataBuffer[1] = '2';
-	RF_Data.Message.CircularDataBuffer[2] = 'N';
-	RF_Data.Message.CircularDataBuffer[3] = 'o';
-	RF_Data.Message.CircularDataBuffer[4] = 'd';
-	RF_Data.Message.CircularDataBuffer[5] = 'e';
-
-	RF_setAddressData(RX_ADDR_P0, 6);
 	RF_resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '1';
@@ -55,7 +53,7 @@ void RF_Setup(void)
 	RF_Data.Message.CircularDataBuffer[4] = 'd';
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
-	RF_setAddressData(RX_ADDR_P1, 6);
+	RF_setAddressData(RX_ADDR_P0, 6);
 	RF_resetMessage();
 
 	RF_Data.Message.CircularDataBuffer[1] = '2';
@@ -64,10 +62,19 @@ void RF_Setup(void)
 	RF_Data.Message.CircularDataBuffer[4] = 'd';
 	RF_Data.Message.CircularDataBuffer[5] = 'e';
 
+	RF_setAddressData(RX_ADDR_P1, 6);
+	RF_resetMessage();
+
+	RF_Data.Message.CircularDataBuffer[1] = '1';
+	RF_Data.Message.CircularDataBuffer[2] = 'N';
+	RF_Data.Message.CircularDataBuffer[3] = 'o';
+	RF_Data.Message.CircularDataBuffer[4] = 'd';
+	RF_Data.Message.CircularDataBuffer[5] = 'e';
+
 	RF_setAddressData(TX_ADDR, 6);
 	RF_resetMessage();
 
-	/* Start up the module */
+	/* Start up the module and set receive mode*/
 	RF_setRegister(CONFIG, (0x0f));
 
 	RF_getRegister(RX_PW_P0);
