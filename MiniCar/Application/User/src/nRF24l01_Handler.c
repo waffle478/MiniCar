@@ -191,12 +191,12 @@ void RF_transferMessageToUart(UART_HandleTypeDef *huart)
 		RF_Data.ReceivedMessage.CircularDataBuffer[RF_Data.ReceivedMessage.MessageLenght] = '\n';
 		RF_Data.ReceivedMessage.MessageLenght++;
 
-		HAL_UART_Transmit(huart, RF_Data.ReceivedMessage.CircularDataBuffer, RF_Data.ReceivedMessage.MessageLenght, DEFAULT_TIMEOUT);
+		HAL_UART_Transmit(huart, RF_Data.ReceivedMessage.CircularDataBuffer, RF_Data.ReceivedMessage.MessageLenght, DEFAULT_TIMEOUT + 100);
 		RF_Data.ReceivedMessage.MessageLenght = 0;
 	}
 	else
 	{
-		//HAL_UART_Transmit(huart, ":(\r\n", 4, DEFAULT_TIMEOUT);
+		//HAL_UART_Transmit(huart, ".", 1, DEFAULT_TIMEOUT);
 	}
 }
 
