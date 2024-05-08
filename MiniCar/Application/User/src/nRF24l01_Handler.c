@@ -19,7 +19,7 @@ void RF_Setup(void)
 	RF_sendCommand(FLUSH_RX);
 
 	/* Stop the RF MCU */
-	//RF_setRegisterUnsafely(CONFIG, 0x00);
+	RF_setRegisterUnsafely(CONFIG, 0x00);
 	/* Clear status register */
 	RF_setRegisterUnsafely(STATUS, 0x70);
 
@@ -32,9 +32,11 @@ void RF_Setup(void)
 	RF_setRegister(EN_AA, 0x3f);
 
 	/* Set The output power to 0dB and data transmit speed to 1Mbps */
-	RF_setRegisterUnsafely(RF_SETUP, 0x07);
+	RF_setRegisterUnsafely(RF_SETUP, 0x06);
 	/* Setting channel for communication */
-	RF_setRegister(RF_CH, 0x4c);
+	RF_getRegister(RF_CH);
+	RF_setRegisterUnsafely(RF_CH, 0x4c);
+	RF_getRegister(RF_CH);
 
 	/* Address width to 5 bytes */
 	RF_setRegisterUnsafely(SETUP_AW, 0x03);
@@ -42,8 +44,8 @@ void RF_Setup(void)
 	RF_setRegisterUnsafely(SETUP_RETR, 0x4f);
 
 	/* Set number of bytes to receive */
-	RF_setRegisterUnsafely(RX_PW_P0, 0x01);
-	RF_setRegisterUnsafely(RX_PW_P1, 0x01);
+	RF_setRegisterUnsafely(RX_PW_P0, 0x00);
+	RF_setRegisterUnsafely(RX_PW_P1, 0x05);
 
 	RF_resetMessage();
 
@@ -126,6 +128,7 @@ void RF_setRegister(uint8_t regAddress, uint8_t data)
 
 	RF_Data.Message.MessageLenght = 2;
 	SPI_AddMessageToQueue(&RF_Data.Message);
+	RF_resetMessage();
 }
 
 void RF_setRegisterUnsafely(uint8_t regAddress, uint8_t data)
@@ -188,10 +191,11 @@ void RF_receiveMessage(SPI_message message)
 void RF_transferMessageToUart(UART_HandleTypeDef *huart)
 {
 	if (RF_Data.ReceivedMessage.MessageLenght > 0 && RF_Data.ReceivedMessage.CircularDataBuffer[0] == 0x42) {
-		RF_Data.ReceivedMessage.CircularDataBuffer[RF_Data.ReceivedMessage.MessageLenght] = '\n';
+		RF_Data.ReceivedMessage.CircularDataBuffer[RF_Data.ReceivedMessage.MessageLenght] = '\r';
 		RF_Data.ReceivedMessage.MessageLenght++;
+		RF_Data.ReceivedMessage.CircularDataBuffer[RF_Data.ReceivedMessage.MessageLenght] = '\n';
 
-		HAL_UART_Transmit(huart, RF_Data.ReceivedMessage.CircularDataBuffer, RF_Data.ReceivedMessage.MessageLenght, DEFAULT_TIMEOUT + 100);
+		HAL_UART_Transmit(huart, &RF_Data.ReceivedMessage.CircularDataBuffer[1], RF_Data.ReceivedMessage.MessageLenght, DEFAULT_TIMEOUT + 100);
 		RF_Data.ReceivedMessage.MessageLenght = 0;
 	}
 	else

@@ -150,6 +150,7 @@ void SPI_resetMessage(SPI_message *message)
 	message->Module.FunctionType = 0;
 	message->RelatedTo.EarlierMessage = 0;
 	message->RelatedTo.Byte = 0;
+	message->RelatedTo.Mask = 0;
 }
 
 void SPI_resetCircularDataBuffer(uint8_t *dataBuffer)
