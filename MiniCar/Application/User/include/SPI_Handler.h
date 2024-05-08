@@ -68,7 +68,7 @@ typedef struct{
 }SPI_Data;
 
 uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress);
-uint8_t SPI_INIT(SPI_HandleTypeDef *port, UART_HandleTypeDef *huart);
+uint8_t SPI_INIT(SPI_HandleTypeDef *port);
 void SPI_EmptyQueue();
 void SPI_AdvanceQueue();
 void SPI_Cycle();

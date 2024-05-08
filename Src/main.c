@@ -116,11 +116,11 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   MX_CRC_Init();
   MX_SPI1_Init();
   MX_UART4_Init();
   MX_TIM2_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
   if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK) {
@@ -128,7 +128,6 @@ int main(void)
   }
 
 
-  SPI_INIT(&hspi1, &huart2);
   //MPU_Init();
 
   MC_Init(&htim1, &htim3);
@@ -273,6 +272,7 @@ static void MX_SPI1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN SPI1_Init 2 */
+  SPI_INIT(&hspi1);
   /* USER CODE END SPI1_Init 2 */
 
 }

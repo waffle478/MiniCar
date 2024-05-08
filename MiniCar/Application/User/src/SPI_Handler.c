@@ -12,7 +12,6 @@
 #include <stm32l4xx.h>
 
 SPI_Data Data;
-UART_HandleTypeDef *huarttt;
 
 uint8_t SPI_AddMessageToQueue(SPI_message *message){
 	uint8_t ret = 0;
@@ -28,10 +27,9 @@ uint8_t SPI_AddMessageToQueue(SPI_message *message){
 }
 
 
-uint8_t SPI_INIT(SPI_HandleTypeDef *port, UART_HandleTypeDef *huart){
+uint8_t SPI_INIT(SPI_HandleTypeDef *port){
 	Data.HalSpiPort = port;
 	Data.Queue.QueueLength = 0;
-	*huarttt = *huart;
 	return 0;
 }
 
@@ -55,12 +53,6 @@ void SPI_Cycle(){
 				/* Must set status before the interrupt */
 				Data.Queue.Status = STATUS_TRANCIEVING;
 				SPI_EnableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
-				/* Send data with interrupt */
-				uint8_t str[30] = {0};
-				sprintf(&str, (uint8_t *)"%x %x\r\n", CURRENT_QUEUE_ELEMENT.CircularDataBuffer[0], CURRENT_QUEUE_ELEMENT.CircularDataBuffer[1]);
-				HAL_UART_Transmit(&huarttt, (uint8_t *)&str, 7, DEFAULT_TIMEOUT + 100);
-				HAL_UART_Transmit(&huarttt, (uint8_t *)".", 1, DEFAULT_TIMEOUT + 100);
-
 				HAL_SPI_Receive_IT(Data.HalSpiPort, CURRENT_QUEUE_ELEMENT.CircularDataBuffer, CURRENT_QUEUE_ELEMENT.MessageLenght);
 			}
 			break;
