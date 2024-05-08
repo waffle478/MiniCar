@@ -45,7 +45,7 @@ void RF_Setup(void)
 
 	/* Set number of bytes to receive */
 	RF_setRegisterUnsafely(RX_PW_P0, 0x00);
-	RF_setRegisterUnsafely(RX_PW_P1, 0x05);
+	RF_setRegisterUnsafely(RX_PW_P1, 0x01);
 
 	RF_resetMessage();
 
