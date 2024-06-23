@@ -68,7 +68,7 @@ typedef struct{
 }SPI_Data;
 
 uint8_t SPI_AddMessageToQueue(SPI_message *messageAddress);
-uint8_t SPI_INIT(SPI_HandleTypeDef *port);
+uint8_t SPI_INIT(SPI_HandleTypeDef *);
 void SPI_EmptyQueue();
 void SPI_AdvanceQueue();
 void SPI_Cycle();
@@ -76,5 +76,7 @@ void SPI_EnableSSPin(uint8_t Type);
 void SPI_DisableSSPin(uint8_t Type);
 void SPI_resetMessage(SPI_message *message);
 void SPI_resetCircularDataBuffer(uint8_t *dataBuffer);
+uint8_t SPI_getStatus(void);
+uint8_t SPI_getQueueLength(void);
 
 #endif /* APPLICATION_USER_INCLUDE_SPI_HANDLER_H_ */

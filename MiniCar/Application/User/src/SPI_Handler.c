@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <stm32l4xx.h>
-
 SPI_Data Data;
 
 uint8_t SPI_AddMessageToQueue(SPI_message *message){
@@ -51,8 +49,9 @@ void SPI_Cycle(){
 			/* Enable correct module to communicate with and send message */
 			if (Data.Queue.QueueLength != 0 && CURRENT_QUEUE_ELEMENT.MessageLenght != 0) {
 				/* Must set status before the interrupt */
-				Data.Queue.Status = STATUS_TRANCIEVING;
 				SPI_EnableSSPin(CURRENT_QUEUE_ELEMENT.Module.ModuleType);
+				Data.Queue.Status = STATUS_TRANCIEVING;
+				/* Send data with interrupt */
 				HAL_SPI_Receive_IT(Data.HalSpiPort, CURRENT_QUEUE_ELEMENT.CircularDataBuffer, CURRENT_QUEUE_ELEMENT.MessageLenght);
 			}
 			break;
@@ -113,9 +112,11 @@ void SPI_DisableSSPin(uint8_t Type){
 			HAL_GPIO_WritePin(SPI_NSS_RF_MODULE_GPIO_Port, SPI_NSS_RF_MODULE_Pin, SET);
 			break;
 #ifdef GYRO
+#if GYRO == ENABLED
 		case MODULE_TYPE_GYRO:
 			HAL_GPIO_WritePin(SPI_NSS_GYRO_MODULE_GPIO_Port, SPI_NSS_GYRO_MODULE_Pin, SET);
 			break;
+#endif
 #endif
 
 #if DISTANCE == 1
@@ -150,7 +151,15 @@ void SPI_resetCircularDataBuffer(uint8_t *dataBuffer)
 	memset(dataBuffer, 0, 32);
 }
 
+uint8_t SPI_getStatus(void)
+{
+	return Data.Queue.Status;
+}
 
+uint8_t SPI_getQueueLength(void)
+{
+	return Data.Queue.QueueLength;
+}
 
 
 void HAL_SPI_RxCpltCallback (SPI_HandleTypeDef * hspi)
